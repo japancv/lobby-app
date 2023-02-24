@@ -1,0 +1,48 @@
+# add file to emulator with this command:
+# `adb push app/src/main/java/com/example/lobbyapp/constants/config.ini /storage/emulated/0/Download/`
+#
+# Required fields:
+#   LOGO,
+#   PRIMARY_COLOR,
+#   SECONDARY_COLOR,
+#   BACKGROUND_COLOR,
+#   TEXT_COLOR,
+#   UA,
+#   QUALITY_CHECK,
+#   THRESHOLD,
+#   IDP_URL,
+#   IDP_KEY,
+#   PREFIX,
+#   PIN
+
+# [Appearance]
+# Set the logo image here
+LOGO = logo.png
+
+# Set the theme colors here
+PRIMARY_COLOR = #C91320
+SECONDARY_COLOR = #878787
+BACKGROUND_COLOR = #FFFFFF
+TEXT_COLOR = #363636
+
+# Set the user agreement here
+UA = These Terms of Service (the “Terms”), along with, to the extent applicable, the Order, the SLA, the Policies and any other terms and conditions agreed between the Parties that apply to the Terms, constitute an agreement (this “Agreement”) by and between Japan Computer Vision Corp, a company incorporated under the Laws of Japan whose principal place of business is 1-7-1 Kaigan, Minato-ku, Tokyo 105-7590, Japan (“JCV”) and the corporation, partnership, sole proprietorship, or other business entity or the individual executing this Agreement (“Customer”). This Agreement is effective as of the date Customer clicks “Accepted and Agreed To” (the “Effective Date”). Customer’s use of and JCV’s provision of the Services are governed by this Agreement. JCV and Customer will be collectively referred to as the “Parties” or individually as a “Party”.
+
+# Set the registration quality check option
+QUALITY_CHECK = FALSE
+
+# Set the search threshold
+THRESHOLD = 0.85
+
+# [IDP]
+# Set the JCV Cloud identity manager OpenAPI endpoint here
+IDP_URL = <IDP_URL>
+
+# Set the JCV Cloud identity manager OpenAPI key here
+IDP_KEY = <IDP_KEY>
+
+# Set the identity group prefix here. Only groups with name of the same prefix will be displayed in the APP
+PREFIX = guest-
+
+# Set the default PIN code for identity manager
+PIN = 0000
