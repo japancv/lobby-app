@@ -29,9 +29,8 @@ class FaceAnalyzer(
     threshold: Double,
     navigateToWaitForConfirmation: () -> Unit = {},
     navigateToCannotRecognize: () -> Unit = {},
-    onError: () -> Unit = {}
-) :
-    ImageAnalysis.Analyzer {
+    onError: (error: Exception) -> Unit = {}
+) : ImageAnalysis.Analyzer {
     private val apiClient =
         ApiClient.getInstance().create(IdpApiService::class.java)
     private val options = FaceDetectorOptions.Builder()
@@ -40,13 +39,13 @@ class FaceAnalyzer(
         .setMinFaceSize(0.15f)
         .build()
     private val detector = FaceDetection.getClient(options)
-    private var evaluating: Boolean = false
-    private var navigated: Boolean = false
+    private var evaluating: Boolean
+    private var navigated: Boolean
     private var _faceDetectionViewModel: FaceDetectionViewModel
     private var _threshold: Double
-    private var _navigateToCannotRecognize: () -> Unit = {}
-    private var _navigateToWaitForConfirmation: () -> Unit = {}
-    private var _onError: () -> Unit = {}
+    private var _navigateToCannotRecognize: () -> Unit
+    private var _navigateToWaitForConfirmation: () -> Unit
+    private var _onError: (error: Exception) -> Unit
 
     init {
         //add the detector in lifecycle observer to properly close it when it's no longer needed.
@@ -75,9 +74,13 @@ class FaceAnalyzer(
         detector.process(image)
             .addOnSuccessListener { faces ->
                 Log.d(TAG, "Number of face detected: " + faces.size)
-                _faceDetectionViewModel.setFaces(faces)
+                val isError = _faceDetectionViewModel.uiState.value.error != null
 
-                if (!evaluating && faces.size > 0) {
+                if (!isError) {
+                    _faceDetectionViewModel.setFaces(faces)
+                }
+
+                if (!evaluating && !isError && faces.size > 0) {
                     evaluating = true
                     imageProxy.image?.let { image ->
                         val base64Image = imageToBase64(image)
@@ -113,10 +116,10 @@ class FaceAnalyzer(
                                 }
                             } catch (e: IOException) {
                                 Log.d("FaceAnalyzer Error", e.toString())
-                                _onError()
+                                _onError(e)
                             } catch (e: HttpException) {
                                 Log.d("FaceAnalyzer Error", e.toString())
-                                // TODO: display error message if there is no face
+                                _onError(e)
                             } finally {
                                 evaluating = false
                             }

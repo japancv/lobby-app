@@ -135,7 +135,7 @@ fun IdentityRow(
             text = "${identity.firstName} ${identity.lastName}", weight = column3Weight
         )
         TableCell(
-            text = if (identityDetails !== null) "${identityDetails?.createdAt}" else "",
+            text = if (identityDetails != null) "${identityDetails?.createdAt}" else "",
             weight = column4Weight
         )
     }

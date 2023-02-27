@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,7 +16,7 @@ import com.example.lobbyapp.R
 import com.example.lobbyapp.ui.component.*
 import com.example.lobbyapp.ui.viewModel.ManageIdentityUiState
 import com.example.lobbyapp.ui.viewModel.ManageIdentityViewModel
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 @Composable
 fun ManageIdentityScreen(
@@ -27,6 +24,7 @@ fun ManageIdentityScreen(
     onCancelButtonClicked: () -> Unit = {},
     groupId: String,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val showConfirmDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
@@ -48,10 +46,11 @@ fun ManageIdentityScreen(
         if (showConfirmDialog.value) {
             ConfirmDialog(
                 onConfirm = {
-                    runBlocking {
+                    coroutineScope.launch {
                         manageIdentityViewModel.removeIdentitiesFromGroup(
                             groupId = groupId,
-                            userIds = manageIdentityViewModel.identitySummaries.map { identity -> identity.userId })
+                            userIds = manageIdentityViewModel.identitySummaries.map { identity -> identity.userId }
+                        )
                     }
                     showConfirmDialog.value = false
                 },
@@ -84,7 +83,7 @@ fun ManageIdentityScreen(
                     buttonText = stringResource(R.string.remove),
                     disabled = manageIdentityViewModel.selectedIds.isEmpty(),
                     onClick = {
-                        runBlocking {
+                        coroutineScope.launch {
                             manageIdentityViewModel.removeIdentitiesFromGroup(
                                 groupId = groupId,
                                 userIds = manageIdentityViewModel.selectedIds

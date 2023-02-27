@@ -81,4 +81,5 @@
     <string name="required">必須</string>
     <string name="too_long">長すぎます、最長は255まで</string>
     <string name="invalid_email">不正なメールアドレス</string>
+    <string name="illegal_logo_path">不正なロゴのファイルパス</string>
 </resources>

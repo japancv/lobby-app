@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.example.lobbyapp.LobbyAppApplication
 import com.example.lobbyapp.ui.viewModel.FaceDetectionViewModel
 import com.example.lobbyapp.util.FaceAnalyzer
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
@@ -44,7 +45,7 @@ fun CameraView(
     faceDetectionViewModel: FaceDetectionViewModel,
     navigateToWaitForConfirmation: () -> Unit = {},
     navigateToCannotRecognize: () -> Unit = {},
-    onError: () -> Unit = {},
+    onError: (error: Exception) -> Unit = {},
 ) {
     val context = LocalContext.current
     val application = LocalContext.current.applicationContext as LobbyAppApplication
@@ -76,31 +77,31 @@ fun CameraView(
             )
         }
 
+    LaunchedEffect(true) {
+        val cameraProvider = context.getCameraProvider()
+
+        cameraProvider.unbindAll()
+        cameraProvider.bindToLifecycle(
+            lifecycleOwner,
+            cameraSelector,
+            preview,
+            analysisUseCase
+        )
+        irCameraManager.openCamera(
+            CameraCharacteristics.LENS_FACING_FRONT.toString(),
+            Executors.newSingleThreadExecutor(),
+            object : CameraDevice.StateCallback() {
+                override fun onOpened(camera: CameraDevice) {}
+                override fun onDisconnected(p0: CameraDevice) {}
+                override fun onError(p0: CameraDevice, p1: Int) {
+                    onError(IOException())
+                }
+            }
+        )
+        preview.setSurfaceProvider(previewView.surfaceProvider)
+    }
+
     Box(contentAlignment = Alignment.BottomCenter, modifier = modifier.fillMaxSize()) {
         AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
-
-        LaunchedEffect(true) {
-            val cameraProvider = context.getCameraProvider()
-
-            cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(
-                lifecycleOwner,
-                cameraSelector,
-                preview,
-                analysisUseCase
-            )
-            irCameraManager.openCamera(
-                CameraCharacteristics.LENS_FACING_FRONT.toString(),
-                Executors.newSingleThreadExecutor(),
-                object : CameraDevice.StateCallback() {
-                    override fun onOpened(camera: CameraDevice) {}
-                    override fun onDisconnected(p0: CameraDevice) {}
-                    override fun onError(p0: CameraDevice, p1: Int) {
-                        onError()
-                    }
-                }
-            )
-            preview.setSurfaceProvider(previewView.surfaceProvider)
-        }
     }
 }

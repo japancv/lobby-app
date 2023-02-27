@@ -16,9 +16,7 @@ class LobbyAppApplication : Application() {
     lateinit var container: AppContainer
     var activityList = mapOf<ActivityKey, Activity>()
 
-    override fun onCreate() {
-        super.onCreate()
-
+    fun initContainer() {
         try {
             container = DefaultAppContainer()
         } catch (e: FileNotFoundException) {

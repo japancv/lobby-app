@@ -26,8 +26,7 @@ fun checkConfigExists(): Boolean {
     return getFile("config.ini").exists()
 }
 
-fun checkConfigRequiredFieldsExist(): String {
-    val properties = readConfigFromFile()
+fun checkConfigRequiredFieldsExist(properties: Properties): String {
     val keys = RequiredFields.values()
     var missingKeys = listOf<RequiredFields>()
     keys.toList().forEach {

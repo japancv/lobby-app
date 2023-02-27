@@ -4,10 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,7 +17,7 @@ import com.example.lobbyapp.ui.component.GlobalLayout
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
 import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 import com.example.lobbyapp.util.toSecondarySp
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserInfoConfirmationScreen(
@@ -28,6 +25,7 @@ fun UserInfoConfirmationScreen(
     onContinueButtonClicked: () -> Unit = {},
     onEditButtonClicked: () -> Unit = {}
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val showErrorDialog = remember { mutableStateOf(false) }
     val userInfoUiState = UserInfoViewModel.uiState.collectAsState()
 
@@ -76,12 +74,14 @@ fun UserInfoConfirmationScreen(
                 CustomButton(
                     buttonText = stringResource(R.string.continues),
                     onClick = {
-                        runBlocking {
-                            UserInfoViewModel.createIdentity(onError = {
-                                showErrorDialog.value = true
-                            })
+                        coroutineScope.launch {
+                            UserInfoViewModel.createIdentity(
+                                onSuccess = onContinueButtonClicked,
+                                onError = {
+                                    showErrorDialog.value = true
+                                }
+                            )
                         }
-                        onContinueButtonClicked()
                     },
                     modifier = Modifier.weight(1f)
                 )

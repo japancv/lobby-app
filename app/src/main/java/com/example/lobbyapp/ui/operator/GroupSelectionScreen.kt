@@ -37,26 +37,23 @@ fun GroupSelectionScreen(
     val groupSelectionViewModel: GroupSelectionViewModel =
         viewModel(factory = GroupSelectionViewModel.Factory)
 
-    GlobalLayout(
-        headerTitle = stringResource(R.string.title_group_selection),
-        onCancelButtonClicked = onCancelButtonClicked
-    ) {
-        when (groupSelectionViewModel.uiState) {
-            is GroupSelectionUiState.Loading -> LoadingScreen()
-            is GroupSelectionUiState.Error -> ErrorDialog(onConfirm = onCancelButtonClicked)
-            else -> GrantAccessScreen(
-                groupSelectionViewModel = groupSelectionViewModel,
-                onIssueButtonClicked = onIssueButtonClicked,
-                prefix = application.container.configProperties.getProperty("PREFIX")
-            )
-        }
+    when (groupSelectionViewModel.uiState) {
+        is GroupSelectionUiState.Loading -> LoadingDialog()
+        is GroupSelectionUiState.Error -> ErrorDialog(onConfirm = onCancelButtonClicked)
+        else -> GrantAccessScreen(
+            groupSelectionViewModel = groupSelectionViewModel,
+            onIssueButtonClicked = onIssueButtonClicked,
+            onCancelButtonClicked = onCancelButtonClicked,
+            prefix = application.container.configProperties.getProperty("PREFIX")
+        )
     }
 }
 
 @Composable
 fun GrantAccessScreen(
     groupSelectionViewModel: GroupSelectionViewModel,
-    onIssueButtonClicked: () -> Unit = {},
+    onIssueButtonClicked: () -> Unit,
+    onCancelButtonClicked: () -> Unit,
     prefix: String
 ) {
     val groups = groupSelectionViewModel.groups
@@ -84,56 +81,64 @@ fun GrantAccessScreen(
         LoadingDialog()
     }
 
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
+    GlobalLayout(
+        headerTitle = stringResource(R.string.title_group_selection),
+        onCancelButtonClicked = onCancelButtonClicked
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            AutoComplete(
-                multiple = true,
-                placeholder = { Text(stringResource(R.string.select_group)) },
-                options = groups.map {
-                    Option(
-                        label = it.name.replace(prefix, ""),
-                        value = it
-                    )
-                },
-                selectedOptions = selectedOptionsState.value,
-                onChange = fun(selectedOptions) {
-                    selectedOptionsState.value = selectedOptions
-                })
-        }
-        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.SpaceBetween) {
-            if (selectedOptionsState.value.isNotEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f, false)
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    selectedOptionsState.value.forEach { option ->
-                        SelectedGroupItem(
-                            group = option.value as IdpGroupSummary,
-                            prefix = prefix,
-                            onDelete = fun(
-                                deletedGroup
-                            ) {
-                                selectedOptionsState.value =
-                                    selectedOptionsState.value.filter { it.value !== deletedGroup }
-                            })
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                AutoComplete(
+                    multiple = true,
+                    placeholder = { Text(stringResource(R.string.select_group)) },
+                    options = groups.map {
+                        Option(
+                            label = it.name.replace(prefix, ""),
+                            value = it
+                        )
+                    },
+                    selectedOptions = selectedOptionsState.value,
+                    onChange = fun(selectedOptions) {
+                        selectedOptionsState.value = selectedOptions
+                    })
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                if (selectedOptionsState.value.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f, false)
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        selectedOptionsState.value.forEach { option ->
+                            SelectedGroupItem(
+                                group = option.value as IdpGroupSummary,
+                                prefix = prefix,
+                                onDelete = fun(
+                                    deletedGroup
+                                ) {
+                                    selectedOptionsState.value =
+                                        selectedOptionsState.value.filter { it.value !== deletedGroup }
+                                })
+                        }
                     }
                 }
-            }
 
-            CustomButton(
-                modifier = Modifier.fillMaxWidth(),
-                disabled = selectedOptionsState.value.isEmpty(),
-                buttonText = stringResource(R.string.issue),
-                onClick = { handleClickIssue() }
-            )
+                CustomButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    disabled = selectedOptionsState.value.isEmpty(),
+                    buttonText = stringResource(R.string.issue),
+                    onClick = { handleClickIssue() }
+                )
+            }
         }
     }
 }

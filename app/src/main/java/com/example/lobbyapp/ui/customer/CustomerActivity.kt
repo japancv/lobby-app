@@ -17,58 +17,61 @@ import com.example.lobbyapp.ui.component.ErrorScreen
 import com.example.lobbyapp.ui.component.ErrorType
 import com.example.lobbyapp.ui.theme.Colors
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
-import java.lang.reflect.Method
 
 class CustomerActivity : ComponentActivity() {
     private var navActions: CustomerNavigation? = null
-    private val STATUS_BAR_DISABLE_HOME = 0x00200000
-    private val STATUS_BAR_DISABLE_BACK = 0x00400000
-    private val STATUS_BAR_DISABLE_RECENT = 0x01000000
-    private val STATUS_BAR_DISABLE_EXPAND = 0x00010000
-    private val STATUS_BAR_DISABLE_NONE = 0x00000000
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val configProperties = (application as LobbyAppApplication).container.configProperties
         (application as LobbyAppApplication).addActivity(ActivityKey.CUSTOMER, this)
         hideNavigationBar()
 
-        setContent {
-            LobbyAppTheme(
-                colors = Colors(
-                    primaryColor = configProperties.getProperty("PRIMARY_COLOR"),
-                    secondaryColor = configProperties.getProperty("SECONDARY_COLOR"),
-                    backgroundColor = configProperties.getProperty("BACKGROUND_COLOR"),
-                    textColor = configProperties.getProperty("TEXT_COLOR")
-                )
-            ) {
-                if (!intent.getBooleanExtra("isConfigExisted", true)) {
+        if (!intent.getBooleanExtra("isConfigExisted", true)) {
+            setContent {
+                LobbyAppTheme {
                     ErrorScreen(isSecondaryDisplay = true, errorType = ErrorType.CONFIG_NOT_FOUND)
-                    return@LobbyAppTheme
-                } else if (!intent.getBooleanExtra("isInternetAvailable", true)) {
-                    ErrorScreen(
-                        isSecondaryDisplay = true,
-                        errorType = ErrorType.INTERNET_NOT_AVAILABLE
-                    )
-                    return@LobbyAppTheme
-                } else if (intent.getStringExtra("isRequiredFieldsExisted")?.isEmpty() != true) {
-                    ErrorScreen(
-                        isSecondaryDisplay = true,
-                        errorType = ErrorType.CONFIG_REQUIRED_FIELD_MISSING,
-                        extraMessage = intent.getStringExtra("isRequiredFieldsExisted")!!
-                    )
-                    return@LobbyAppTheme
                 }
+            }
+        } else {
+            val configProperties = (application as LobbyAppApplication).container.configProperties
 
-                val navController = rememberNavController()
-                navActions = CustomerNavigation(navController, this@CustomerActivity).also {
-                    CustomerApp(
-                        activity = this@CustomerActivity,
-                        navController = navController,
-                        navActions = remember { it },
+            setContent {
+                LobbyAppTheme(
+                    colors = Colors(
+                        primaryColor = configProperties.getProperty("PRIMARY_COLOR"),
+                        secondaryColor = configProperties.getProperty("SECONDARY_COLOR"),
+                        backgroundColor = configProperties.getProperty("BACKGROUND_COLOR"),
+                        textColor = configProperties.getProperty("TEXT_COLOR")
                     )
+                ) {
+                    if (!intent.getBooleanExtra("isInternetAvailable", true)) {
+                        ErrorScreen(
+                            errorType = ErrorType.INTERNET_NOT_AVAILABLE
+                        )
+                        return@LobbyAppTheme
+                    } else if (intent.getStringExtra("missingConfigFields")?.isNotEmpty() == true) {
+                        ErrorScreen(
+                            errorType = ErrorType.CONFIG_REQUIRED_FIELD_MISSING,
+                            extraMessage = intent.getStringExtra("missingConfigFields")!!
+                        )
+                        return@LobbyAppTheme
+                    } else if (!intent.getBooleanExtra("isLogoFilePathLegal", true)) {
+                        ErrorScreen(
+                            errorType = ErrorType.ILLEGAL_LOGO_PATH
+                        )
+                        return@LobbyAppTheme
+                    }
+
+                    val navController = rememberNavController()
+                    navActions = CustomerNavigation(navController, this@CustomerActivity).also {
+                        CustomerApp(
+                            activity = this@CustomerActivity,
+                            navController = navController,
+                            navActions = remember { it },
+                        )
+                    }
                 }
             }
         }
@@ -77,6 +80,7 @@ class CustomerActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
+
         hideNavigationBar()
     }
 
@@ -123,13 +127,6 @@ class CustomerActivity : ComponentActivity() {
     @SuppressLint("WrongConstant")
     private fun hideNavigationBar() {
         window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-
-        val statusBarManager = Class.forName("android.app.StatusBarManager")
-        val disable: Method = statusBarManager.getMethod("disable", Int::class.javaPrimitiveType)
-        disable.invoke(
-            this.getSystemService("statusbar"),
-            STATUS_BAR_DISABLE_HOME or STATUS_BAR_DISABLE_BACK or STATUS_BAR_DISABLE_RECENT or STATUS_BAR_DISABLE_EXPAND or STATUS_BAR_DISABLE_NONE
-        )
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
 }

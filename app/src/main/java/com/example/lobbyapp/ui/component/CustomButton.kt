@@ -43,7 +43,7 @@ fun CustomButton(
         shape = shape
     ) {
         Text(
-            buttonText,
+            text = buttonText,
             modifier = Modifier.padding(4.dp),
             color = textColor,
             style = textTypo,

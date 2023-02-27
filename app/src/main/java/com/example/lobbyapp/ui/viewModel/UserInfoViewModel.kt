@@ -2,6 +2,7 @@ package com.example.lobbyapp.ui.viewModel
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.lobbyapp.R
 import com.example.lobbyapp.data.ApiClient
 import com.example.lobbyapp.model.CreateIdentityRequest
@@ -10,6 +11,7 @@ import com.example.lobbyapp.network.IdpApiService
 import com.example.lobbyapp.util.readConfigFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.*
@@ -175,34 +177,37 @@ object UserInfoViewModel : ViewModel() {
     /**
      * Call API to create an identity
      */
-    suspend fun createIdentity(onError: () -> Unit) {
-        val apiClient = ApiClient.getInstance().create(IdpApiService::class.java)
-        val properties = readConfigFromFile()
+    suspend fun createIdentity(onSuccess: () -> Unit, onError: () -> Unit) {
+        viewModelScope.launch {
+            val apiClient = ApiClient.getInstance().create(IdpApiService::class.java)
+            val properties = readConfigFromFile()
 
-        try {
-            apiClient.createIdentity(
-                CreateIdentityRequest(
-                    userId = uiState.value.id,
-                    firstName = uiState.value.firstName,
-                    lastName = uiState.value.lastName,
-                    phoneNumber = uiState.value.phoneNumber,
-                    phoneCode = "+81",
-                    email = uiState.value.email,
-                    portrait = Portrait(
-                        data = uiState.value.image,
-                        pinCode = properties.getProperty("PIN"),
-                        qualityCheck = properties.getProperty("QUALITY_CHECK")
-                            .lowercase(locale = Locale.ENGLISH) === "true",
-                        storeFile = true,
-                        storeFace = true
-                    ),
-                    cardNo = ""
+            try {
+                apiClient.createIdentity(
+                    CreateIdentityRequest(
+                        userId = uiState.value.id,
+                        firstName = uiState.value.firstName,
+                        lastName = uiState.value.lastName,
+                        phoneNumber = uiState.value.phoneNumber,
+                        phoneCode = "+81",
+                        email = uiState.value.email,
+                        portrait = Portrait(
+                            data = uiState.value.image,
+                            pinCode = properties.getProperty("PIN"),
+                            qualityCheck = properties.getProperty("QUALITY_CHECK")
+                                .lowercase(locale = Locale.ENGLISH) == "true",
+                            storeFile = true,
+                            storeFace = true
+                        ),
+                        cardNo = ""
+                    )
                 )
-            )
-        } catch (e: IOException) {
-            onError()
-        } catch (e: HttpException) {
-            onError()
+                onSuccess()
+            } catch (e: IOException) {
+                onError()
+            } catch (e: HttpException) {
+                onError()
+            }
         }
     }
 

@@ -31,7 +31,7 @@ fun MaintenanceScreen(
     }
 
     when (manageIdentityViewModel.uiState) {
-        ManageIdentityUiState.GetGroupsLoading -> LoadingScreen(isSecondaryDisplay = true)
+        ManageIdentityUiState.GetGroupsLoading -> LoadingDialog()
         ManageIdentityUiState.Error -> ErrorDialog(onConfirm = onCancelButtonClicked)
         else -> {
             if (groupId == "") {

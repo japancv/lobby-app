@@ -43,10 +43,10 @@ android {
             variant ->
                 variant.outputs.each {
                     output ->
-                        project.ext { appName = 'Lobby_APP' }
+                        project.ext { appName = 'Lobby_Base_App' }
                         def newName = output.outputFile.name
                         // replace previous name with our app name.
-                        newName = newName.replace("app-", "$project.ext.appName-$variant.versionName-")
+                        newName = newName.replace("app-", "${project.ext.appName}_${variant.versionName}_")
                         output.outputFileName = newName
                 }
         }

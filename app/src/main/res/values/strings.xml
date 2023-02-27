@@ -81,4 +81,5 @@
     <string name="required">Required</string>
     <string name="too_long">Too long, max characters: 255</string>
     <string name="invalid_email">Invalid email address</string>
+    <string name="illegal_logo_path">Illegal logo file path</string>
 </resources>

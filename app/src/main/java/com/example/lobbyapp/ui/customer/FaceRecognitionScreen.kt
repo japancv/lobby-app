@@ -6,20 +6,14 @@ import android.util.Size
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lobbyapp.R
-import com.example.lobbyapp.ui.component.CameraView
-import com.example.lobbyapp.ui.component.ErrorDialog
-import com.example.lobbyapp.ui.component.Header
-import com.example.lobbyapp.ui.component.StateBottomAppBar
+import com.example.lobbyapp.ui.component.*
 import com.example.lobbyapp.ui.viewModel.FaceDetectionViewModel
 import com.example.lobbyapp.view.FaceOverlay
 
@@ -28,13 +22,17 @@ import com.example.lobbyapp.view.FaceOverlay
 @Composable
 fun FaceRecognitionScreen(
     navigateToWaitForConfirmation: () -> Unit = {},
-    navigateToCannotRecognize: () -> Unit = {},
-    modifier: Modifier = Modifier
+    navigateToCannotRecognize: () -> Unit = {}
 ) {
-    val showErrorDialog = remember { mutableStateOf(false) }
     val faceDetectionViewModel: FaceDetectionViewModel =
         viewModel(factory = FaceDetectionViewModel.Factory)
     val faceDetectionState = faceDetectionViewModel.uiState.collectAsState()
+
+    if (faceDetectionState.value.error != null) {
+        ErrorDialog(onConfirm = {
+            faceDetectionViewModel.setError(null)
+        })
+    }
 
     Scaffold(
         topBar = {
@@ -44,25 +42,18 @@ fun FaceRecognitionScreen(
             )
         },
         bottomBar = { StateBottomAppBar(initialState = stringResource(R.string.scanning)) },
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
     ) {
-        if (showErrorDialog.value) {
-            ErrorDialog(onConfirm = {
-                showErrorDialog.value = false
-            })
-        }
-
         CameraView(
-            modifier = modifier,
+            modifier = Modifier,
             faceDetectionViewModel = faceDetectionViewModel,
             navigateToWaitForConfirmation = navigateToWaitForConfirmation,
             navigateToCannotRecognize = navigateToCannotRecognize,
-            onError = {
-                showErrorDialog.value = true
+            onError = fun(error) {
+                faceDetectionViewModel.setError(error)
             }
         )
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
                 FaceOverlay(ctx, null)
             },

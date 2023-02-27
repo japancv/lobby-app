@@ -2,6 +2,7 @@ package com.example.lobbyapp.util
 
 import android.graphics.*
 import android.media.Image
+import android.os.Environment
 import android.util.Base64
 import java.io.ByteArrayOutputStream
 
@@ -31,4 +32,12 @@ fun imageToBase64(image: Image): String {
     var base64Str = Base64.encodeToString(byteArray, Base64.DEFAULT)
     base64Str = base64Str.replace(System.getProperty("line.separator"), "")
     return base64Str
+}
+
+fun checkLegalLogoPath(logoPath: String): Boolean {
+    val downloadsDir =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    val logoFile = downloadsDir.resolve(logoPath).canonicalFile
+
+    return logoFile.startsWith(downloadsDir)
 }

@@ -13,9 +13,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import com.example.lobbyapp.ui.customer.CustomerActivity
 import com.example.lobbyapp.ui.operator.OperatorActivity
-import com.example.lobbyapp.util.checkConfigExists
-import com.example.lobbyapp.util.checkConfigRequiredFieldsExist
-import com.example.lobbyapp.util.checkInternetAvailable
+import com.example.lobbyapp.util.*
 import com.vmadalin.easypermissions.EasyPermissions
 
 class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
@@ -57,8 +55,7 @@ class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET,
-            Manifest.permission.CAMERA,
-            Manifest.permission.STATUS_BAR
+            Manifest.permission.CAMERA
         )
 
     private fun requestProperPermissions() {
@@ -69,8 +66,7 @@ class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET,
-            Manifest.permission.CAMERA,
-            Manifest.permission.STATUS_BAR
+            Manifest.permission.CAMERA
         )
     }
 
@@ -109,12 +105,21 @@ class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
         val displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
         // Get all connected displays
         val displays = displayManager.displays
-        // Check if the config file exists
-        val isConfigExisted = checkConfigExists()
-        // Check if the required fields in config file exist
-        val isRequiredFieldsExisted = checkConfigRequiredFieldsExist()
         // Check if the device is connecting to the internet
         val isInternetAvailable = checkInternetAvailable(this)
+        // Check if the config file exists
+        val isConfigExisted = checkConfigExists()
+        var missingConfigFields = ""
+        var isLogoFilePathLegal = isConfigExisted
+
+        if (isConfigExisted) {
+            (application as LobbyAppApplication).initContainer()
+            val configProperties = (application as LobbyAppApplication).container.configProperties
+            // Check if the required fields in config file exist
+            missingConfigFields = checkConfigRequiredFieldsExist(configProperties)
+            // Check if the logo file path starts with the downloads directory
+            isLogoFilePathLegal = checkLegalLogoPath(configProperties.getProperty("LOGO"))
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             for (display in displays) {
@@ -126,14 +131,16 @@ class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
                     val intent = Intent(this, CustomerActivity::class.java)
                     intent.putExtra("isConfigExisted", isConfigExisted)
                     intent.putExtra("isInternetAvailable", isInternetAvailable)
-                    intent.putExtra("isRequiredFieldsExisted", isRequiredFieldsExisted)
+                    intent.putExtra("missingConfigFields", missingConfigFields)
+                    intent.putExtra("isLogoFilePathLegal", isLogoFilePathLegal)
                     startActivity(intent, options.toBundle())
                 } else {
                     // Start OperatorActivity on the back display
                     val intent = Intent(this, OperatorActivity::class.java)
                     intent.putExtra("isConfigExisted", isConfigExisted)
                     intent.putExtra("isInternetAvailable", isInternetAvailable)
-                    intent.putExtra("isRequiredFieldsExisted", isRequiredFieldsExisted)
+                    intent.putExtra("missingConfigFields", missingConfigFields)
+                    intent.putExtra("isLogoFilePathLegal", isLogoFilePathLegal)
                     startActivity(intent, options.toBundle())
                 }
             }

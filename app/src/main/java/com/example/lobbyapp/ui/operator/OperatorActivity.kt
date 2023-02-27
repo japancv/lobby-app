@@ -20,43 +20,55 @@ class OperatorActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val configProperties = (application as LobbyAppApplication).container.configProperties
         (application as LobbyAppApplication).addActivity(ActivityKey.OPERATOR, this)
 
-        setContent {
-            LobbyAppTheme(
-                colors = Colors(
-                    primaryColor = configProperties.getProperty("PRIMARY_COLOR"),
-                    secondaryColor = configProperties.getProperty("SECONDARY_COLOR"),
-                    backgroundColor = configProperties.getProperty("BACKGROUND_COLOR"),
-                    textColor = configProperties.getProperty("TEXT_COLOR")
-                )
-            ) {
-                if (!intent.getBooleanExtra("isConfigExisted", true)) {
+        if (!intent.getBooleanExtra("isConfigExisted", true)) {
+            setContent {
+                LobbyAppTheme {
                     ErrorScreen(isSecondaryDisplay = true, errorType = ErrorType.CONFIG_NOT_FOUND)
-                    return@LobbyAppTheme
-                } else if (!intent.getBooleanExtra("isInternetAvailable", true)) {
-                    ErrorScreen(
-                        isSecondaryDisplay = true,
-                        errorType = ErrorType.INTERNET_NOT_AVAILABLE
-                    )
-                    return@LobbyAppTheme
-                } else if (intent.getStringExtra("isRequiredFieldsExisted")?.isEmpty() != true) {
-                    ErrorScreen(
-                        isSecondaryDisplay = true,
-                        errorType = ErrorType.CONFIG_REQUIRED_FIELD_MISSING,
-                        extraMessage = intent.getStringExtra("isRequiredFieldsExisted")!!
-                    )
-                    return@LobbyAppTheme
                 }
+            }
+        } else {
+            val configProperties = (application as LobbyAppApplication).container.configProperties
 
-                val navController = rememberNavController()
-                navActions = OperatorNavigation(navController, this@OperatorActivity).also {
-                    OperatorApp(
-                        activity = this@OperatorActivity,
-                        navController = navController,
-                        navActions = remember { it },
+            setContent {
+                LobbyAppTheme(
+                    colors = Colors(
+                        primaryColor = configProperties.getProperty("PRIMARY_COLOR"),
+                        secondaryColor = configProperties.getProperty("SECONDARY_COLOR"),
+                        backgroundColor = configProperties.getProperty("BACKGROUND_COLOR"),
+                        textColor = configProperties.getProperty("TEXT_COLOR")
                     )
+                ) {
+                    if (!intent.getBooleanExtra("isInternetAvailable", true)) {
+                        ErrorScreen(
+                            isSecondaryDisplay = true,
+                            errorType = ErrorType.INTERNET_NOT_AVAILABLE
+                        )
+                        return@LobbyAppTheme
+                    } else if (intent.getStringExtra("missingConfigFields")?.isNotEmpty() == true) {
+                        ErrorScreen(
+                            isSecondaryDisplay = true,
+                            errorType = ErrorType.CONFIG_REQUIRED_FIELD_MISSING,
+                            extraMessage = intent.getStringExtra("missingConfigFields")!!
+                        )
+                        return@LobbyAppTheme
+                    } else if (!intent.getBooleanExtra("isLogoFilePathLegal", true)) {
+                        ErrorScreen(
+                            isSecondaryDisplay = true,
+                            errorType = ErrorType.ILLEGAL_LOGO_PATH
+                        )
+                        return@LobbyAppTheme
+                    }
+
+                    val navController = rememberNavController()
+                    navActions = OperatorNavigation(navController, this@OperatorActivity).also {
+                        OperatorApp(
+                            activity = this@OperatorActivity,
+                            navController = navController,
+                            navActions = remember { it },
+                        )
+                    }
                 }
             }
         }

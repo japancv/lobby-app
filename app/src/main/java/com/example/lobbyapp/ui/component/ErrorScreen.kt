@@ -15,6 +15,7 @@ enum class ErrorType {
     CONFIG_NOT_FOUND,
     CONFIG_REQUIRED_FIELD_MISSING,
     INTERNET_NOT_AVAILABLE,
+    ILLEGAL_LOGO_PATH
 }
 
 @Composable
@@ -27,19 +28,20 @@ fun ErrorScreen(
         ErrorType.CONFIG_NOT_FOUND -> stringResource(R.string.error_config_not_found)
         ErrorType.INTERNET_NOT_AVAILABLE -> stringResource(R.string.error_internet_not_available)
         ErrorType.CONFIG_REQUIRED_FIELD_MISSING -> stringResource(R.string.error_config_required_field_missing)
+        ErrorType.ILLEGAL_LOGO_PATH -> stringResource(R.string.illegal_logo_path)
     }
 
-    GlobalLayout(isSecondaryDisplay = isSecondaryDisplay, headerButtonText = "") {
+    GlobalLayout(isSecondaryDisplay = isSecondaryDisplay, showHeader = false) {
         Text(
             text = errorMessage,
-            style = if (isSecondaryDisplay) MaterialTheme.typography.h2 else MaterialTheme.typography.h2.toSecondarySp(),
+            style = if (isSecondaryDisplay) MaterialTheme.typography.h2.toSecondarySp() else MaterialTheme.typography.h2,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
         )
-        if (extraMessage !== "") {
+        if (extraMessage.isNotBlank()) {
             Text(
                 text = extraMessage,
-                style = if (isSecondaryDisplay) MaterialTheme.typography.h5 else MaterialTheme.typography.h5.toSecondarySp(),
+                style = if (isSecondaryDisplay) MaterialTheme.typography.h5.toSecondarySp() else MaterialTheme.typography.h5,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(top = 20.dp),
