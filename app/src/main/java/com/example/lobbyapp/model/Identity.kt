@@ -57,6 +57,16 @@ data class CreateIdentityRequest(
 )
 
 @Serializable
+data class UpdateIdentityPortraitRequest(
+    val portrait: Portrait,
+)
+
+@Serializable
+data class UpdateIdentityPortraitResponse(
+    val portrait: Portrait,
+)
+
+@Serializable
 data class SearchRequest(
     val image: Base64Image,
     val threshold: Double,

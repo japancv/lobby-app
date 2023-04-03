@@ -22,6 +22,7 @@ enum class OperatorScreen {
     OperatorAccessGranted,
     OperatorSuccessFound,
     OperatorMaintenance,
+    OperatorWelcome,
 }
 
 @Composable
@@ -92,6 +93,12 @@ fun OperatorApp(
         }
         composable(route = OperatorScreen.OperatorMaintenance.name) {
             MaintenanceScreen(
+                onCancelButtonClicked = { navActions.navigateToHome() },
+            )
+        }
+        composable(route = OperatorScreen.OperatorWelcome.name) {
+            WelcomeScreen(
+                onGoToNextScreen = { navActions.navigateToAgreement() },
                 onCancelButtonClicked = { navActions.navigateToHome() },
             )
         }

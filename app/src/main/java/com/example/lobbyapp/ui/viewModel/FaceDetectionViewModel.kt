@@ -12,7 +12,7 @@ data class FaceDetectionState(
     var faces: List<Face> = emptyList<Face>(),
     var previewWidth: Int = 1,
     var previewHeight: Int = 1,
-    var error: Exception? = null,
+    var error: String? = null,
 )
 
 class FaceDetectionViewModel : ViewModel() {
@@ -49,8 +49,7 @@ class FaceDetectionViewModel : ViewModel() {
         }
     }
 
-    fun setError(error: Exception?) {
-        println("setError: $error")
+    fun setError(error: String?) {
         uiState.update { currentState ->
             currentState.copy(
                 faces = emptyList(),

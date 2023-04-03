@@ -32,7 +32,10 @@ fun MaintenanceScreen(
 
     when (manageIdentityViewModel.uiState) {
         ManageIdentityUiState.GetGroupsLoading -> LoadingDialog()
-        ManageIdentityUiState.Error -> ErrorDialog(onConfirm = onCancelButtonClicked)
+        ManageIdentityUiState.Error -> ErrorDialog(
+            errorMessage = manageIdentityViewModel.error?.message,
+            onConfirm = onCancelButtonClicked
+        )
         else -> {
             if (groupId == "") {
                 SelectionScreen(

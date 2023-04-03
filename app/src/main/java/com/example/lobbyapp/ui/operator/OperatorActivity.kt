@@ -108,6 +108,9 @@ class OperatorActivity : ComponentActivity() {
                 "$packageName.${OperatorScreen.OperatorSuccessFound.name}" -> {
                     navActions?.navigateSuccessFound(true)
                 }
+                "$packageName.${OperatorScreen.OperatorWelcome.name}" -> {
+                    navActions?.navigateWelcome()
+                }
                 else -> {
                     navActions?.navigateToHome(true)
                 }

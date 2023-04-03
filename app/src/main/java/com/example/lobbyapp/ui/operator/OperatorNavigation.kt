@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import com.example.lobbyapp.ui.customer.CustomerActivity
 import com.example.lobbyapp.ui.customer.CustomerScreen
 import com.example.lobbyapp.ui.customer.popUpAll
-import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 
 inline fun OperatorNavigation.startCustomerActivity(block: Intent.() -> Unit) {
     Log.d("nav-operator", "startCustomerActivity: $activity.localClassName")
@@ -39,7 +38,6 @@ class OperatorNavigation(
             }
         }
         popUpAll(OperatorScreen.OperatorHome.name)
-        UserInfoViewModel.resetForm()
     }
 
     fun navigateToCannotRecognize(ifSelfTriggered: Boolean = false) {
@@ -110,5 +108,9 @@ class OperatorNavigation(
 
     fun navigateSuccessFound(ifSelfTriggered: Boolean = false) {
         popUpAll(OperatorScreen.OperatorSuccessFound.name)
+    }
+
+    fun navigateWelcome(ifSelfTriggered: Boolean = false) {
+        popUpAll(OperatorScreen.OperatorWelcome.name)
     }
 }

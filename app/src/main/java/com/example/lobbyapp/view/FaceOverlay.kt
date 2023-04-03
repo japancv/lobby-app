@@ -52,7 +52,7 @@ class FaceOverlay @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        drawOverlay(canvas);
+        drawOverlay(canvas)
     }
 
     fun setFaces(faceList: List<Face>) {

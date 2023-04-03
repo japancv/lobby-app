@@ -11,7 +11,7 @@ import com.example.lobbyapp.ui.theme.body5
 
 @Composable
 fun ErrorDialog(
-    errorMessage: String = stringResource(R.string.default_error_message),
+    errorMessage: String? = null,
     onConfirm: () -> Unit = {}
 ) {
     CustomDialog(
@@ -30,7 +30,7 @@ fun ErrorDialog(
         },
         text = {
             Text(
-                text = errorMessage,
+                text = if (errorMessage.isNullOrBlank()) stringResource(R.string.default_error_message) else errorMessage,
                 style = MaterialTheme.typography.body5
             )
         }

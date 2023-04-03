@@ -14,6 +14,9 @@
     <string name="retry">再試行</string>
     <string name="error">エラー</string>
     <string name="default_error_message">エラーが発生しました。</string>
+    <string name="barcode_error_message">QRコードのエラーが発生しました。</string>
+    <string name="face_detection_error_message">顔認識エラーが発生しました。</string>
+    <string name="camera_error_message">カメラ起動エラーが発生しました。</string>
     <!-- ErrorScreen -->
     <string name="error_config_not_found">config.iniが見つかりません</string>
     <string name="error_internet_not_available">インターネットに接続されていません</string>
@@ -24,13 +27,15 @@
     <string name="added_date">追加時刻</string>
     <string name="empty">空</string>
     <!-- Customer -->
+    <!-- WelcomeScreen -->
+    <string name="register_photo_hint">Please register your face photo to gain access</string>
     <!-- AccessGrantedScreen -->
     <string name="title_access_granted">アクセスが許可されました。</string>
     <string name="subtitle_access_granted">お待たせしました。</string>
     <!-- AgreementScreen -->
-    <string name="title_read_and_confirm">お読みいただき、ご確認ください。</string>
+    <string name="title_read_and_confirm">お読みいただき\nご確認ください。</string>
     <string name="agree">同意</string>
-    <string name="already_registered_question">すでに登録されていますか？</string>
+    <string name="already_registered_question">すでに登録？</string>
     <string name="check_in">チェックイン</string>
     <!-- CannotRecognizeScreen -->
     <string name="not_registered_found">登録済みのゲストが見つかりません！</string>
@@ -50,6 +55,7 @@
     <string name="welcome">いらっしゃいませ</string>
     <string name="welcome_back">おかえりなさい</string>
     <string name="wait_for_confirmation">確認中、をお待ちください</string>
+    <string name="register_success">顔登録成功</string>
     <!-- Operator -->
     <!-- AgreementScreen -->
     <string name="wait_for_agreement_confirmation">利用規約確認中...</string>
@@ -69,7 +75,7 @@
     <string name="check_in_question">訪問者はこの人としてチェックインしますか？</string>
     <string name="check_in_question_hint">情報が一致しない場合は、ITサポートにお問い合わせください</string>
     <!-- UserInfoConfirmationScreen -->
-    <string name="confirm_info">情報を確認してくださいn</string>
+    <string name="confirm_info">情報を確認してください</string>
     <string name="edit">修正</string>
     <!-- UserInfoConfirmationScreen -->
     <string name="contact_info">連絡先情報</string>

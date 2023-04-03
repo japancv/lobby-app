@@ -20,7 +20,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.lobbyapp.LobbyAppApplication
 import com.example.lobbyapp.ui.viewModel.FaceDetectionViewModel
-import com.example.lobbyapp.util.FaceAnalyzer
+import com.example.lobbyapp.ui.viewModel.QrCodeViewModel
+import com.example.lobbyapp.util.ImageAnalyzer
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
@@ -43,13 +44,15 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
 fun CameraView(
     modifier: Modifier,
     faceDetectionViewModel: FaceDetectionViewModel,
-    navigateToWaitForConfirmation: () -> Unit = {},
+    qrCodeViewModel: QrCodeViewModel,
+    navigateToWelcomeScreen: () -> Unit = {},
     navigateToCannotRecognize: () -> Unit = {},
+    navigateToWaitForConfirmation: () -> Unit = {},
     onError: (error: Exception) -> Unit = {},
 ) {
     val context = LocalContext.current
     val application = LocalContext.current.applicationContext as LobbyAppApplication
-    val irCameraManager by remember { mutableStateOf(context.getSystemService(Context.CAMERA_SERVICE) as CameraManager) }
+    val (irCameraManager) = remember { mutableStateOf(context.getSystemService(Context.CAMERA_SERVICE) as CameraManager) }
     val preview = Preview.Builder().build()
     val lifecycleOwner = LocalLifecycleOwner.current
     val executor = ContextCompat.getMainExecutor(context)
@@ -60,22 +63,24 @@ fun CameraView(
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
     }
+
+    val imageAnalyzer = ImageAnalyzer(
+        lifecycle = lifecycleOwner.lifecycle,
+        faceDetectionViewModel = faceDetectionViewModel,
+        qrCodeViewModel = qrCodeViewModel,
+        threshold = application.container.configProperties.getProperty("THRESHOLD")
+            .toDouble(),
+        navigateToWelcomeScreen = navigateToWelcomeScreen,
+        navigateToCannotRecognize = navigateToCannotRecognize,
+        navigateToWaitForConfirmation = navigateToWaitForConfirmation,
+    )
+
     val analysisUseCase = ImageAnalysis.Builder()
         .build()
         .also {
-            it.setAnalyzer(
-                executor,
-                FaceAnalyzer(
-                    lifecycle = lifecycleOwner.lifecycle,
-                    faceDetectionViewModel = faceDetectionViewModel,
-                    threshold = application.container.configProperties.getProperty("THRESHOLD")
-                        .toDouble(),
-                    navigateToWaitForConfirmation = navigateToWaitForConfirmation,
-                    navigateToCannotRecognize = navigateToCannotRecognize,
-                    onError = onError
-                )
-            )
+            it.setAnalyzer(executor, imageAnalyzer)
         }
+
 
     LaunchedEffect(true) {
         val cameraProvider = context.getCameraProvider()

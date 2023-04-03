@@ -35,8 +35,8 @@ QUALITY_CHECK = FALSE
 THRESHOLD = 0.85
 
 # [IDP]
-# Set the JCV Cloud identity manager OpenAPI endpoint here
-IDP_URL = <IDP_URL>
+# Set the JCV Cloud identity manager OpenAPI endpoint here, please set to the correct region and don't forget the backslash at the end
+IDP_URL = https://<IDP_URL>/api/v1/    # need to add the /api/v1/
 
 # Set the JCV Cloud identity manager OpenAPI key here
 IDP_KEY = <IDP_KEY>

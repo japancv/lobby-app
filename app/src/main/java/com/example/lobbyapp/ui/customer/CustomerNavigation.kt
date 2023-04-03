@@ -38,12 +38,14 @@ class CustomerNavigation(
         }
     }
 
-    fun navigateToFaceRecognition() {
+    fun navigateToFaceRecognition(shouldResetForm: Boolean = true) {
         startOperatorActivity {
             action = "${activity.packageName}.${OperatorScreen.OperatorHome.name}"
         }
         popUpAll(CustomerScreen.FaceRecognition.name)
-        UserInfoViewModel.resetForm()
+        if (shouldResetForm) {
+            UserInfoViewModel.resetForm()
+        }
     }
 
     fun navigateToCannotRecognize() {
@@ -87,5 +89,12 @@ class CustomerNavigation(
 
     fun navigateToMaintenance() {
         popUpAll(CustomerScreen.MaintenanceScreen.name)
+    }
+
+    fun navigateToWelcome() {
+        startOperatorActivity {
+            action = "${activity.packageName}.${OperatorScreen.OperatorWelcome.name}"
+        }
+        popUpAll(CustomerScreen.WelcomeScreen.name)
     }
 }

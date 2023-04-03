@@ -26,14 +26,17 @@ fun UserInfoConfirmationScreen(
     onEditButtonClicked: () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val showErrorDialog = remember { mutableStateOf(false) }
+    val error = remember { mutableStateOf<Exception?>(null) }
     val userInfoUiState = UserInfoViewModel.uiState.collectAsState()
 
     GlobalLayout(headerBottomBorder = false, onCancelButtonClicked = onCancelButtonClicked) {
-        if (showErrorDialog.value) {
-            ErrorDialog(onConfirm = {
-                showErrorDialog.value = false
-            })
+        if (error.value != null) {
+            ErrorDialog(
+                errorMessage = error.value?.message,
+                onConfirm = {
+                    error.value = null
+                }
+            )
         }
 
         Text(
@@ -78,7 +81,7 @@ fun UserInfoConfirmationScreen(
                             UserInfoViewModel.createIdentity(
                                 onSuccess = onContinueButtonClicked,
                                 onError = {
-                                    showErrorDialog.value = true
+                                    error.value = it
                                 }
                             )
                         }

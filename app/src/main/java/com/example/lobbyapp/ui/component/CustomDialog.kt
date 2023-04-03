@@ -41,7 +41,8 @@ fun CustomDialog(
             shape = RoundedCornerShape(8.dp),
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (title != null) {
                     title()
@@ -53,7 +54,7 @@ fun CustomDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 20.dp),
+                            .padding(top = 12.dp),
                         horizontalArrangement = Arrangement.End,
                     ) {
                         if (dismissButton != null) {
@@ -64,7 +65,6 @@ fun CustomDialog(
                         }
                     }
                 }
-
             }
         }
     }

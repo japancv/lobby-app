@@ -38,8 +38,11 @@ fun GroupSelectionScreen(
         viewModel(factory = GroupSelectionViewModel.Factory)
 
     when (groupSelectionViewModel.uiState) {
-        is GroupSelectionUiState.Loading -> LoadingDialog()
-        is GroupSelectionUiState.Error -> ErrorDialog(onConfirm = onCancelButtonClicked)
+        GroupSelectionUiState.Loading -> LoadingDialog()
+        GroupSelectionUiState.Error -> ErrorDialog(
+            errorMessage = groupSelectionViewModel.error?.message,
+            onConfirm = onCancelButtonClicked
+        )
         else -> GrantAccessScreen(
             groupSelectionViewModel = groupSelectionViewModel,
             onIssueButtonClicked = onIssueButtonClicked,

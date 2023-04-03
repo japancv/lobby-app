@@ -17,16 +17,17 @@ import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.IOException
 
-sealed interface GroupSelectionUiState {
-    object Success : GroupSelectionUiState
-    object AddSuccess : GroupSelectionUiState
-    object Error : GroupSelectionUiState
-    object Loading : GroupSelectionUiState
-    object AddLoading : GroupSelectionUiState
+enum class GroupSelectionUiState {
+    Success,
+    AddSuccess,
+    Loading,
+    AddLoading,
+    Error,
 }
 
 class GroupSelectionViewModel(private val idpRepository: IdpRepository) : ViewModel() {
     var uiState: GroupSelectionUiState by mutableStateOf(GroupSelectionUiState.Loading)
+    var error by mutableStateOf<Exception?>(null)
     var groups by mutableStateOf(listOf<IdpGroupSummary>())
 
     init {
@@ -39,49 +40,56 @@ class GroupSelectionViewModel(private val idpRepository: IdpRepository) : ViewMo
             uiState = try {
                 groups =
                     withContext(Dispatchers.Default) { idpRepository.getGroups() }.groups
+                error = null
                 GroupSelectionUiState.Success
             } catch (e: IOException) {
+                error = e
                 GroupSelectionUiState.Error
             } catch (e: HttpException) {
+                error = e
                 GroupSelectionUiState.Error
             }
         }
     }
 
     fun addIdentityToGroups(groupIds: List<String>, userId: String) {
+
         viewModelScope.launch {
             val userIds = listOf(
-                UserInfoViewModel.uiState.value.id
+                userId
             )
             uiState = GroupSelectionUiState.AddLoading
             uiState = try {
                 // remove the user from the unselected groups
-                groups.filter { !groupIds.contains(it.id) }.map {
+                groups.map {
                     async {
-                        idpRepository.removeGroupIdentities(
-                            groupId = it.id,
-                            request = RemoveGroupIdentitiesRequest(
-                                userIds = userIds
+
+                        if (!groupIds.contains(it.id)) {
+                            idpRepository.removeGroupIdentities(
+                                groupId = it.id,
+                                request = RemoveGroupIdentitiesRequest(
+                                    userIds = userIds
+                                )
                             )
-                        )
-                    }
-                }.awaitAll()
-                // add the user to the selected group
-                groupIds.map {
-                    async {
-                        idpRepository.addGroupIdentities(
-                            groupId = it,
-                            request = AddGroupIdentitiesRequest(
-                                userIds = userIds
+                        } else {
+                            idpRepository.addGroupIdentities(
+                                groupId = it.id,
+                                request = AddGroupIdentitiesRequest(
+                                    userIds = userIds
+                                )
                             )
-                        )
+                        }
+                        delay(800L)
                     }
                 }.awaitAll()
 
+                error = null
                 GroupSelectionUiState.AddSuccess
             } catch (e: IOException) {
+                error = e
                 GroupSelectionUiState.Error
             } catch (e: HttpException) {
+                error = e
                 GroupSelectionUiState.Error
             }
         }

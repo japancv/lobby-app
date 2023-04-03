@@ -22,6 +22,10 @@ interface IdpRepository {
         groupId: String,
         request: RemoveGroupIdentitiesRequest
     ): IdpGroup
+
+    suspend fun getDecodedUserId(
+        request: DecodedUserIdRequest
+    ): DecodedUserIdResponse
 }
 
 class NetworkIdpRepository(
@@ -62,5 +66,9 @@ class NetworkIdpRepository(
         identityId: String,
     ): ByteString {
         return idpApiService.getPortrait(identityId = identityId)
+    }
+
+    override suspend fun getDecodedUserId(request: DecodedUserIdRequest): DecodedUserIdResponse {
+        return idpApiService.getDecodedUserId(request = request)
     }
 }

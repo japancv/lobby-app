@@ -36,6 +36,7 @@ enum class ManageIdentityUiState {
 
 class ManageIdentityViewModel(private val idpRepository: IdpRepository) : ViewModel() {
     var uiState: ManageIdentityUiState by mutableStateOf(ManageIdentityUiState.GetGroupsLoading)
+    var error by mutableStateOf<Exception?>(null)
     var identitySummaries by mutableStateOf(listOf<IdentitySummary>())
     private val identitiesMap = mutableMapOf<String, Identity>()
     private val portraitMap = mutableMapOf<String, Bitmap>()
@@ -64,10 +65,13 @@ class ManageIdentityViewModel(private val idpRepository: IdpRepository) : ViewMo
             uiState = try {
                 groups =
                     withContext(Dispatchers.Default) { idpRepository.getGroups() }.groups
+                error = null
                 ManageIdentityUiState.GetGroupsSuccess
             } catch (e: IOException) {
+                error = e
                 ManageIdentityUiState.Error
             } catch (e: HttpException) {
+                error = e
                 ManageIdentityUiState.Error
             }
         }
@@ -79,11 +83,14 @@ class ManageIdentityViewModel(private val idpRepository: IdpRepository) : ViewMo
             uiState = try {
                 identitySummaries =
                     withContext(Dispatchers.Default) { idpRepository.getGroup(groupId) }.identities
+                error = null
                 onSuccess()
                 ManageIdentityUiState.GetGroupSuccess
             } catch (e: IOException) {
+                error = e
                 ManageIdentityUiState.Error
             } catch (e: HttpException) {
+                error = e
                 ManageIdentityUiState.Error
             }
         }
@@ -98,11 +105,14 @@ class ManageIdentityViewModel(private val idpRepository: IdpRepository) : ViewMo
                 uiState = try {
                     val identity = idpRepository.getIdentity(identityId = identityId)
                     identitiesMap[identity.userId] = identity
+                    error = null
                     onSuccess(identity)
                     ManageIdentityUiState.GetIdentitySuccess
                 } catch (e: IOException) {
+                    error = e
                     ManageIdentityUiState.Error
                 } catch (e: HttpException) {
+                    error = e
                     ManageIdentityUiState.Error
                 }
             }
@@ -119,10 +129,13 @@ class ManageIdentityViewModel(private val idpRepository: IdpRepository) : ViewMo
                     val byteArray = base64Image.toByteArray()
                     val bitmapImage = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
                     portraitMap[identityId] = bitmapImage
+                    error = null
                     onSuccess(bitmapImage)
                 } catch (e: IOException) {
+                    error = e
                     ManageIdentityUiState.Error
                 } catch (e: HttpException) {
+                    error = e
                     ManageIdentityUiState.Error
                 }
             }
@@ -141,10 +154,13 @@ class ManageIdentityViewModel(private val idpRepository: IdpRepository) : ViewMo
                     request = RemoveGroupIdentitiesRequest(userIds = userIds)
                 )
                 getGroup(groupId)
+                error = null
                 ManageIdentityUiState.RemoveIdentityFromGroupSuccess
             } catch (e: IOException) {
+                error = e
                 ManageIdentityUiState.Error
             } catch (e: HttpException) {
+                error = e
                 ManageIdentityUiState.Error
             }
         }

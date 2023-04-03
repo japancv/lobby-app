@@ -33,7 +33,8 @@ data class UserInfoUiState(
     var email: String = "",
     var image: String = "",
     var groups: List<String> = listOf(),
-    var errors: Map<String, ErrorMessage> = mapOf()
+    var errors: Map<String, ErrorMessage> = mapOf(),
+    var qrCodeScanned: Boolean = false,
 )
 
 /**
@@ -53,14 +54,34 @@ object UserInfoViewModel : ViewModel() {
             UserInfoUiState(
                 isRegister = true,
                 id = UUID.randomUUID().toString(),
-                firstName = "",
-                lastName = "",
+                firstName = uiState.value.firstName,
+                lastName = uiState.value.lastName,
                 phoneNumber = "",
                 email = "",
                 image = "",
                 groups = listOf(),
-                errors = mapOf()
+                errors = mapOf(),
+                qrCodeScanned = false
             )
+    }
+
+    fun resetNames() {
+        uiState.update { currentState ->
+            currentState.copy(
+                firstName = "",
+                lastName = ""
+            )
+        }
+    }
+
+    fun updateQrCodeScanned(
+        qrCodeScanned: Boolean
+    ) {
+        uiState.update { currentState ->
+            currentState.copy(
+                qrCodeScanned = qrCodeScanned
+            )
+        }
     }
 
     fun updateUserInfo(
@@ -177,7 +198,7 @@ object UserInfoViewModel : ViewModel() {
     /**
      * Call API to create an identity
      */
-    suspend fun createIdentity(onSuccess: () -> Unit, onError: () -> Unit) {
+    suspend fun createIdentity(onSuccess: () -> Unit, onError: (e: Exception) -> Unit) {
         viewModelScope.launch {
             val apiClient = ApiClient.getInstance().create(IdpApiService::class.java)
             val properties = readConfigFromFile()
@@ -204,9 +225,9 @@ object UserInfoViewModel : ViewModel() {
                 )
                 onSuccess()
             } catch (e: IOException) {
-                onError()
+                onError(e)
             } catch (e: HttpException) {
-                onError()
+                onError(e)
             }
         }
     }

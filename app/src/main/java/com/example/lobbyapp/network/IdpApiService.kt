@@ -70,6 +70,20 @@ interface IdpApiService {
     ): Identity
 
     /**
+     * update an identity portrait
+     */
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
+    @PUT("identities/{identityId}/portrait")
+    suspend fun updateIdentityPortrait(
+        @Path("identityId") identityId: String,
+        @Body request: UpdateIdentityPortraitRequest,
+    ): UpdateIdentityPortraitResponse
+
+
+    /**
      * Get identities in a group
      */
     @Headers(
@@ -103,4 +117,16 @@ interface IdpApiService {
     suspend fun getIdentity(
         @Path("identityId") identityId: String,
     ): Identity
+
+    /**
+     * Get Decoded User Id
+     */
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
+    @POST("identities/qrcodes/decode")
+    suspend fun getDecodedUserId(
+        @Body request: DecodedUserIdRequest,
+    ): DecodedUserIdResponse
 }

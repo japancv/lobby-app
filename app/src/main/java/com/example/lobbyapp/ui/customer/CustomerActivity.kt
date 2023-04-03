@@ -31,7 +31,7 @@ class CustomerActivity : ComponentActivity() {
         if (!intent.getBooleanExtra("isConfigExisted", true)) {
             setContent {
                 LobbyAppTheme {
-                    ErrorScreen(isSecondaryDisplay = true, errorType = ErrorType.CONFIG_NOT_FOUND)
+                    ErrorScreen(errorType = ErrorType.CONFIG_NOT_FOUND)
                 }
             }
         } else {
@@ -114,6 +114,9 @@ class CustomerActivity : ComponentActivity() {
                 }
                 "$packageName.${CustomerScreen.MaintenanceScreen.name}" -> {
                     navActions?.navigateToMaintenance()
+                }
+                "$packageName.${CustomerScreen.WelcomeScreen.name}" -> {
+                    navActions?.navigateToWelcome()
                 }
                 else -> {
                     navActions?.navigateToFaceRecognition()

@@ -63,7 +63,7 @@ fun Typography(textColor: Color): Typography {
     return Typography(
         h1 = TextStyle(
             fontWeight = FontWeight.W700,
-            fontSize = 50.sp,
+            fontSize = 48.sp,
             color = textColor
         ),
         h2 = TextStyle(

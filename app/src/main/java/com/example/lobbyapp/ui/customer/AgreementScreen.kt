@@ -12,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,14 +29,16 @@ import com.example.lobbyapp.ui.component.GlobalLayout
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
 import com.example.lobbyapp.ui.theme.body5
 import com.example.lobbyapp.ui.theme.body6
+import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 
 @Composable
 fun AgreementScreen(
     onCancelButtonClicked: () -> Unit = {},
-    onSendButtonClicked: () -> Unit = {},
+    onAgreeButtonClicked: () -> Unit = {},
     onCheckInButtonClicked: () -> Unit = {},
 ) {
     val application = LocalContext.current.applicationContext as LobbyAppApplication
+    val userInfoUiState = UserInfoViewModel.uiState.collectAsState()
 
     GlobalLayout(
         onCancelButtonClicked = onCancelButtonClicked
@@ -62,22 +65,24 @@ fun AgreementScreen(
             modifier = Modifier
                 .padding(vertical = 20.dp)
                 .fillMaxWidth(),
-            onClick = onSendButtonClicked
+            onClick = onAgreeButtonClicked
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                stringResource(R.string.already_registered_question),
-                style = MaterialTheme.typography.body5
-            )
-            TextButton(onClick = onCheckInButtonClicked) {
+        if (!userInfoUiState.value.qrCodeScanned) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Text(
-                    stringResource(R.string.check_in),
-                    color = MaterialTheme.colors.primary,
-                    style = MaterialTheme.typography.h5
+                    stringResource(R.string.already_registered_question),
+                    style = MaterialTheme.typography.body5
                 )
+                TextButton(onClick = onCheckInButtonClicked) {
+                    Text(
+                        stringResource(R.string.check_in),
+                        color = MaterialTheme.colors.primary,
+                        style = MaterialTheme.typography.h5
+                    )
+                }
             }
         }
     }

@@ -34,7 +34,7 @@ fun AutoComplete(
     multiple: Boolean = false,
     onChange: (options: List<Option>) -> Unit
 ) {
-    val expanded = remember { mutableStateOf(true) }
+    val (expanded, setExpanded) = remember { mutableStateOf(true) }
     val focusManager = LocalFocusManager.current
 
     fun handleSelectOption(selectedOption: Option) {
@@ -55,9 +55,9 @@ fun AutoComplete(
 
     ExposedDropdownMenuBox(
         modifier = modifier.fillMaxWidth(),
-        expanded = expanded.value,
+        expanded = expanded,
         onExpandedChange = {
-            expanded.value = !expanded.value
+            setExpanded(!it)
         }
     ) {
         OutlinedTextField(
@@ -77,9 +77,9 @@ fun AutoComplete(
             DropdownMenu(
                 modifier = Modifier.exposedDropdownSize(),
                 offset = DpOffset(0.dp, 4.dp),
-                expanded = expanded.value,
+                expanded = expanded,
                 onDismissRequest = {
-                    expanded.value = false
+                    setExpanded(false)
                     focusManager.clearFocus()
                 }
             ) {
@@ -140,7 +140,7 @@ fun AutoComplete(
 @Preview(showBackground = true)
 @Composable
 fun AutoCompletePreview() {
-    val selectedOptionsState = remember { mutableStateOf(listOf<Option>()) }
+    val (selectedOptions, setSelectedOptions) = remember { mutableStateOf(listOf<Option>()) }
 
     LobbyAppTheme {
         Box(
@@ -148,15 +148,15 @@ fun AutoCompletePreview() {
         ) {
             AutoComplete(
                 multiple = true,
-                placeholder = { Text("Search") },
+                placeholder = { Text("Select") },
                 options = listOf(
                     Option("Option 1", "Value 1"),
                     Option("Option 2", "Value 2"),
                     Option("Option 3", "Value 3")
                 ),
-                selectedOptions = selectedOptionsState.value,
-                onChange = fun(selectedOptions) {
-                    selectedOptionsState.value = selectedOptions
+                selectedOptions = selectedOptions,
+                onChange = {
+                    setSelectedOptions(it)
                 }
             )
         }

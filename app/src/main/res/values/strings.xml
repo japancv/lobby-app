@@ -14,6 +14,9 @@
     <string name="retry">Try Again</string>
     <string name="error">Error</string>
     <string name="default_error_message">An error has occurred.</string>
+    <string name="barcode_error_message">An error has occurred while scanning QR code.</string>
+    <string name="face_detection_error_message">An error has occurred while scanning face.</string>
+    <string name="camera_error_message">An error has occurred while starting camera.</string>
     <!-- ErrorScreen -->
     <string name="error_config_not_found">config.ini not found</string>
     <string name="error_internet_not_available">Internet is not available</string>
@@ -24,6 +27,8 @@
     <string name="added_date">Added Date</string>
     <string name="empty">Empty</string>
     <!-- Customer -->
+    <!-- WelcomeScreen -->
+    <string name="register_photo_hint">Please register your face photo to gain access</string>
     <!-- AccessGrantedScreen -->
     <string name="title_access_granted">Access granted</string>
     <string name="subtitle_access_granted">Thanks for waiting.</string>
@@ -50,6 +55,7 @@
     <string name="welcome">Welcome</string>
     <string name="welcome_back">Welcome Back</string>
     <string name="wait_for_confirmation">Please wait for confirmation</string>
+    <string name="register_success">Register Face Successful</string>
     <!-- Operator -->
     <!-- AgreementScreen -->
     <string name="wait_for_agreement_confirmation">Confirming terms of service...</string>

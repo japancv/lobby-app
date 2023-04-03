@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 import java.util.*
 
 enum class CustomerScreen {
@@ -19,6 +20,7 @@ enum class CustomerScreen {
     WaitForConfirmation,
     AccessGranted,
     MaintenanceScreen,
+    WelcomeScreen,
 }
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -36,8 +38,9 @@ fun CustomerApp(
     ) {
         composable(route = CustomerScreen.FaceRecognition.name) {
             FaceRecognitionScreen(
-                navigateToWaitForConfirmation = { navActions.navigateToWaitForCheckInConfirmation() },
+                navigateToWelcomeScreen = { navActions.navigateToWelcome() },
                 navigateToCannotRecognize = { navActions.navigateToCannotRecognize() },
+                navigateToWaitForConfirmation = { navActions.navigateToWaitForCheckInConfirmation() },
             )
         }
         composable(route = CustomerScreen.CannotRecognize.name) {
@@ -51,7 +54,14 @@ fun CustomerApp(
             AgreementScreen(
                 onCancelButtonClicked = { navActions.navigateToFaceRecognition() },
                 onCheckInButtonClicked = { navActions.navigateToFaceRecognition() },
-                onSendButtonClicked = { navActions.navigateToUserInfo() },
+                onAgreeButtonClicked = {
+                    if (UserInfoViewModel.uiState.value.qrCodeScanned) {
+                        navActions.navigateToFaceRecognition(shouldResetForm = false)
+                    } else {
+                        navActions.navigateToUserInfo()
+                        UserInfoViewModel.resetNames()
+                    }
+                },
             )
         }
         composable(route = CustomerScreen.UserInfo.name) {
@@ -62,7 +72,7 @@ fun CustomerApp(
         }
         composable(route = CustomerScreen.WaitForConfirmation.name) {
             WaitForConfirmationScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() }
+                onCancelButtonClicked = { navActions.navigateToFaceRecognition() },
             )
         }
         composable(route = CustomerScreen.AccessGranted.name) {
@@ -72,6 +82,11 @@ fun CustomerApp(
         }
         composable(route = CustomerScreen.MaintenanceScreen.name) {
             MaintenanceScreen()
+        }
+        composable(route = CustomerScreen.WelcomeScreen.name) {
+            WelcomeScreen(
+                onCancelButtonClicked = { navActions.navigateToFaceRecognition() }
+            )
         }
     }
 }

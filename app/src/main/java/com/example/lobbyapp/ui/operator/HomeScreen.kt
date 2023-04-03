@@ -34,7 +34,7 @@ fun HomeScreen(
                 buttonText = stringResource(R.string.manage_grant_access),
                 modifier = Modifier
                     .height(200.pixelToSecondaryDp)
-                    .width(700.pixelToSecondaryDp),
+                    .width(750.pixelToSecondaryDp),
                 background = MaterialTheme.colors.background,
                 textColor = MaterialTheme.colors.secondaryVariant,
                 textTypo = MaterialTheme.typography.h1.toSecondarySp(),

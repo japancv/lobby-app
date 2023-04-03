@@ -1,4 +1,4 @@
-package com.example.lobbyapp.model;
+package com.example.lobbyapp.model
 
 import kotlinx.serialization.Serializable
 
