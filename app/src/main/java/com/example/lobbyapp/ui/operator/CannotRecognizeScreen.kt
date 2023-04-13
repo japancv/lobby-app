@@ -17,13 +17,15 @@ import com.example.lobbyapp.R
 import com.example.lobbyapp.ui.component.CustomButton
 import com.example.lobbyapp.ui.component.GlobalLayout
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
+import com.example.lobbyapp.util.pixelToSecondaryDp
 import com.example.lobbyapp.util.toSecondarySp
 
 @Composable
 fun CannotRecognizeScreen(
     onCancelButtonClicked: () -> Unit = {},
-    onTryAgainButtonClicked: () -> Unit = {},
-    onRegisterButtonClicked: () -> Unit = {}
+    onHomeButtonClicked: () -> Unit = {},
+    onRegisterButtonClicked: () -> Unit = {},
+    onScanButtonClicked: () -> Unit = {}
 ) {
     GlobalLayout(
         isSecondaryDisplay = true,
@@ -37,13 +39,16 @@ fun CannotRecognizeScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 80.dp),
-            horizontalArrangement = Arrangement.spacedBy(32.dp)
+                .padding(top = 80.pixelToSecondaryDp, bottom = 40.pixelToSecondaryDp),
+            horizontalArrangement = Arrangement.spacedBy(32.pixelToSecondaryDp)
         ) {
             CustomButton(
                 modifier = Modifier.weight(1f),
-                onClick = onTryAgainButtonClicked,
-                buttonText = stringResource(R.string.retry),
+                background = MaterialTheme.colors.background,
+                border = BorderStroke(1.dp, Color.LightGray),
+                onClick = onScanButtonClicked,
+                buttonText = stringResource(R.string.scan),
+                textColor = MaterialTheme.colors.primary,
             )
             CustomButton(
                 modifier = Modifier.weight(1f),
@@ -54,6 +59,11 @@ fun CannotRecognizeScreen(
                 textColor = MaterialTheme.colors.primary,
             )
         }
+        CustomButton(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            onClick = onHomeButtonClicked,
+            buttonText = stringResource(R.string.home),
+        )
     }
 }
 

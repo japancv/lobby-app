@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 data class QrCodeState(
+    var enabled: Boolean = false,
     var encodedUserId: String = "",
     var decodedUserId: String = "",
     var error: String? = null,
@@ -23,6 +24,7 @@ class QrCodeViewModel : ViewModel() {
     private fun resetQrCode() {
         uiState.value =
             QrCodeState(
+                enabled = false,
                 encodedUserId = "",
                 decodedUserId = "",
                 error = null
@@ -47,13 +49,24 @@ class QrCodeViewModel : ViewModel() {
         }
     }
 
+    fun setEnabled(enabled: Boolean) {
+        uiState.update { currentState ->
+            currentState.copy(
+                enabled = enabled
+            )
+        }
+    }
+
     /**
      * Factory for [QrCodeViewModel]
      */
     companion object {
+        // Create a singleton instance of QrCodeViewModel
+        private val instance = QrCodeViewModel()
+        // The Factory that returns the singleton instance of QrCodeViewModel
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                QrCodeViewModel()
+                instance
             }
         }
     }

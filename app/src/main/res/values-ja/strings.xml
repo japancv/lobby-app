@@ -28,7 +28,7 @@
     <string name="empty">空</string>
     <!-- Customer -->
     <!-- WelcomeScreen -->
-    <string name="register_photo_hint">Please register your face photo to gain access</string>
+    <string name="register_photo_hint">アクセスするためには、顔写真を登録してください。</string>
     <!-- AccessGrantedScreen -->
     <string name="title_access_granted">アクセスが許可されました。</string>
     <string name="subtitle_access_granted">お待たせしました。</string>
@@ -41,6 +41,8 @@
     <string name="not_registered_found">登録済みのゲストが見つかりません！</string>
     <string name="not_registered_found_hint">帽子やサングラスなどを外して、もう一度お試しください</string>
     <string name="first_time_register_question">初めてのご利用ですか？</string>
+    <string name="have_a_qr_code">QRコードをお持ちですか？</string>
+    <string name="scan">スキャン</string>
     <!-- FaceRecognitionScreen -->
     <string name="scanning">スキャン中...</string>
     <!-- MaintenanceScreen -->

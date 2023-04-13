@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import com.example.lobbyapp.ui.operator.OperatorActivity
 import com.example.lobbyapp.ui.operator.OperatorScreen
-import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 
 inline fun CustomerNavigation.startOperatorActivity(block: Intent.() -> Unit) {
     Log.d("nav-customer", "startOperatorActivity: $activity.localClassName")
@@ -38,14 +37,11 @@ class CustomerNavigation(
         }
     }
 
-    fun navigateToFaceRecognition(shouldResetForm: Boolean = true) {
+    fun navigateToFaceRecognition() {
         startOperatorActivity {
             action = "${activity.packageName}.${OperatorScreen.OperatorHome.name}"
         }
         popUpAll(CustomerScreen.FaceRecognition.name)
-        if (shouldResetForm) {
-            UserInfoViewModel.resetForm()
-        }
     }
 
     fun navigateToCannotRecognize() {

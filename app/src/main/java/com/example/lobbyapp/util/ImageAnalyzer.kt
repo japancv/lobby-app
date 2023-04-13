@@ -67,89 +67,96 @@ class ImageAnalyzer(
 
     override fun analyze(imageProxy: ImageProxy) {
         _faceDetectionViewModel.setPreview(imageProxy.width, imageProxy.height)
-        detectFaces(imageProxy)
+        detectImage(imageProxy)
     }
 
-    @SuppressLint("UnsafeExperimentalUsageError", "UnsafeOptInUsageError")
-    private fun detectFaces(imageProxy: ImageProxy) {
+    @SuppressLint("UnsafeOptInUsageError")
+    private fun detectImage(imageProxy: ImageProxy) {
         val image = InputImage.fromMediaImage(
             imageProxy.image as Image,
             imageProxy.imageInfo.rotationDegrees
         )
 
         CoroutineScope(Dispatchers.Default).launch {
-            suspend fun faceDeferred() {
-                suspendCoroutine<String> { continuation ->
-                    detector.process(image)
-                        .addOnSuccessListener { faces ->
-                            Log.d(TAG, "Number of face detected: " + faces.size)
-                            val isFaceError = _faceDetectionViewModel.uiState.value.error != null
-                            val isQrError = _qrCodeViewModel.uiState.value.error != null
-                            val hasError = isFaceError || isQrError
-
-                            if (!hasError) {
-                                _faceDetectionViewModel.setFaces(faces)
-                            }
-
-                            if (!evaluating && !hasError && faces.size > 0 && !navigated) {
-                                evaluating = true
-                                imageProxy.image?.let { image ->
-                                    val base64Image = imageToBase64(image)
-                                    Log.d("scanned", UserInfoViewModel.uiState.value.qrCodeScanned.toString())
-                                    if (UserInfoViewModel.uiState.value.qrCodeScanned) {
-                                        updateIdentityPortrait(base64Image)
-                                    } else {
-                                        searchUser(base64Image)
-                                    }
-                                }
-                            }
-                            continuation.resume("")
-                        }
-                        .addOnFailureListener { e ->
-                            continuation.resumeWithException(e)
-                            Log.e(TAG, "Face analysis failure.", e)
-                        }
-                }
+            if (_qrCodeViewModel.uiState.value.enabled) {
+                barcodeDeferred(image)
+            } else {
+                faceDeferred(imageProxy, image)
             }
-
-            suspend fun barcodeDeferred() {
-                suspendCoroutine<String> { continuation ->
-                    val options = BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-                        .build()
-                    val barcodeScanner = BarcodeScanning.getClient(options)
-
-                    barcodeScanner.process(image)
-                        .addOnSuccessListener { barcodes ->
-                            val isFaceError = _faceDetectionViewModel.uiState.value.error != null
-                            val isQrError = _qrCodeViewModel.uiState.value.error != null
-                            val hasError = isFaceError || isQrError
-
-                            if (barcodes.isNotEmpty() && !evaluating && !hasError && !navigated) {
-                                evaluating = true
-                                barcodes[0].rawValue?.let { barcodeValue ->
-                                    Log.d("barcode", barcodeValue)
-                                    _qrCodeViewModel.setEncodedUserId(barcodeValue)
-                                    UserInfoViewModel.updateQrCodeScanned(true)
-                                    getIdentity(barcodeValue)
-                                }
-                            } else {
-                                Log.d(TAG, "analyze: No barcode Scanned")
-                            }
-                            continuation.resume("")
-                        }
-                        .addOnFailureListener { e ->
-                            continuation.resumeWithException(e)
-                            Log.d(TAG, "Barcode Analyser: Something went wrong $e")
-                        }
-                }
-            }
-            // Wait for both deferred tasks to complete
-            faceDeferred()
-            barcodeDeferred()
 
             // Close the imageProxy after both tasks have completed
             imageProxy.close()
+        }
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    private suspend fun faceDeferred(imageProxy: ImageProxy, image: InputImage) {
+        suspendCoroutine<String> { continuation ->
+            detector.process(image)
+                .addOnSuccessListener { faces ->
+                    Log.d(TAG, "Number of face detected: " + faces.size)
+                    val isFaceError = _faceDetectionViewModel.uiState.value.error != null
+                    val isQrError = _qrCodeViewModel.uiState.value.error != null
+                    val hasError = isFaceError || isQrError
+
+                    if (!hasError && !navigated) {
+                        _faceDetectionViewModel.setFaces(faces)
+                    }
+
+                    if (!evaluating && !hasError && faces.size > 0 && !navigated) {
+                        evaluating = true
+                        imageProxy.image?.let { image ->
+                            val base64Image = imageToBase64(image)
+                            Log.d(
+                                "scanned",
+                                UserInfoViewModel.uiState.value.qrCodeScanned.toString()
+                            )
+                            if (UserInfoViewModel.uiState.value.qrCodeScanned) {
+                                updateIdentityPortrait(base64Image)
+                            } else {
+                                searchUser(base64Image)
+                            }
+                        }
+                    }
+                    continuation.resume("")
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                    Log.e(TAG, "Face analysis failure.", e)
+                }
+        }
+    }
+
+    private suspend fun barcodeDeferred(image: InputImage) {
+        suspendCoroutine<String> { continuation ->
+            val options = BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+                .build()
+            val barcodeScanner = BarcodeScanning.getClient(options)
+
+            barcodeScanner.process(image)
+                .addOnSuccessListener { barcodes ->
+                    val isFaceError = _faceDetectionViewModel.uiState.value.error != null
+                    val isQrError = _qrCodeViewModel.uiState.value.error != null
+                    val hasError = isFaceError || isQrError
+
+                    if (barcodes.isNotEmpty() && !evaluating && !hasError && !navigated) {
+                        evaluating = true
+                        barcodes[0].rawValue?.let { barcodeValue ->
+                            Log.d("barcode", barcodeValue)
+                            _qrCodeViewModel.setEncodedUserId(barcodeValue)
+                            UserInfoViewModel.updateQrCodeScanned(true)
+                            getIdentity(barcodeValue)
+                        }
+                    } else {
+                        Log.d(TAG, "analyze: No barcode Scanned")
+                    }
+                    continuation.resume("")
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                    Log.d(TAG, "Barcode Analyser: Something went wrong $e")
+                }
         }
     }
 
@@ -245,19 +252,18 @@ class ImageAnalyzer(
                     )
                 )
                 withContext(Dispatchers.Main) {
-                    if (response.result) {
-                        if (!navigated) {
+                    if (!navigated) {
+                        if (response.result) {
                             navigated = true
                             if (response.identities.isNotEmpty()) {
                                 updateUserInfo(
                                     identity = response.identities[0],
                                     image = base64Image
                                 )
+
                                 _navigateToWaitForConfirmation()
                             }
-                        }
-                    } else {
-                        if (!navigated) {
+                        } else {
                             navigated = true
                             UserInfoViewModel.updateImage(
                                 image = base64Image
@@ -278,13 +284,13 @@ class ImageAnalyzer(
                     _faceDetectionViewModel.setError(errorResponse)
                 }
             } finally {
+                _faceDetectionViewModel.setFaces(emptyList())
                 evaluating = false
             }
         }
     }
 
     private fun updateUserInfo(identity: Identity, image: String) {
-        Log.d("hell", identity.toString())
         UserInfoViewModel.updateUserInfo(
             isRegister = false,
             id = identity.userId,

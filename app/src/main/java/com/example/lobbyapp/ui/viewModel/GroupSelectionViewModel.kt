@@ -53,7 +53,6 @@ class GroupSelectionViewModel(private val idpRepository: IdpRepository) : ViewMo
     }
 
     fun addIdentityToGroups(groupIds: List<String>, userId: String) {
-
         viewModelScope.launch {
             val userIds = listOf(
                 userId

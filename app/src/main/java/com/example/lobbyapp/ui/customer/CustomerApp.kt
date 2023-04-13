@@ -5,10 +5,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.lobbyapp.ui.viewModel.QrCodeViewModel
 import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 import java.util.*
 
@@ -32,6 +34,18 @@ fun CustomerApp(
         CustomerNavigation(navController, activity)
     }
 ) {
+    val qrCodeViewModel: QrCodeViewModel =
+        viewModel(factory = QrCodeViewModel.Factory)
+
+    fun navigateToFaceRecognition(shouldResetForm: Boolean = true, enableQrCode: Boolean = false) {
+        if (shouldResetForm) {
+            UserInfoViewModel.resetForm()
+        }
+
+        qrCodeViewModel.setEnabled(enableQrCode)
+        navActions.navigateToFaceRecognition()
+    }
+
     NavHost(
         navController = navController,
         startDestination = CustomerScreen.FaceRecognition.name,
@@ -45,18 +59,18 @@ fun CustomerApp(
         }
         composable(route = CustomerScreen.CannotRecognize.name) {
             CannotRecognizeScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() },
-                onTryAgainButtonClicked = { navActions.navigateToFaceRecognition() },
+                onCancelButtonClicked = { navigateToFaceRecognition() },
+                onScanButtonClicked = { navigateToFaceRecognition(enableQrCode = true) },
                 onRegisterButtonClicked = { navActions.navigateToAgreement() },
             )
         }
         composable(route = CustomerScreen.Agreement.name) {
             AgreementScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() },
-                onCheckInButtonClicked = { navActions.navigateToFaceRecognition() },
+                onCancelButtonClicked = { navigateToFaceRecognition() },
+                onCheckInButtonClicked = { navigateToFaceRecognition() },
                 onAgreeButtonClicked = {
                     if (UserInfoViewModel.uiState.value.qrCodeScanned) {
-                        navActions.navigateToFaceRecognition(shouldResetForm = false)
+                        navigateToFaceRecognition(shouldResetForm = false)
                     } else {
                         navActions.navigateToUserInfo()
                         UserInfoViewModel.resetNames()
@@ -66,18 +80,18 @@ fun CustomerApp(
         }
         composable(route = CustomerScreen.UserInfo.name) {
             UserInfoScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() },
+                onCancelButtonClicked = { navigateToFaceRecognition() },
                 onContinueButtonClicked = { navActions.navigateToWaitForConfirmation() }
             )
         }
         composable(route = CustomerScreen.WaitForConfirmation.name) {
             WaitForConfirmationScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() },
+                onCancelButtonClicked = { navigateToFaceRecognition() },
             )
         }
         composable(route = CustomerScreen.AccessGranted.name) {
             AccessGrantedScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() }
+                onCancelButtonClicked = { navigateToFaceRecognition() }
             )
         }
         composable(route = CustomerScreen.MaintenanceScreen.name) {
@@ -85,7 +99,7 @@ fun CustomerApp(
         }
         composable(route = CustomerScreen.WelcomeScreen.name) {
             WelcomeScreen(
-                onCancelButtonClicked = { navActions.navigateToFaceRecognition() }
+                onCancelButtonClicked = { navigateToFaceRecognition() }
             )
         }
     }

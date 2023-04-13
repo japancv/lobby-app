@@ -109,7 +109,6 @@ object UserInfoViewModel : ViewModel() {
         }
     }
 
-
     fun updateImage(
         image: String
     ) {

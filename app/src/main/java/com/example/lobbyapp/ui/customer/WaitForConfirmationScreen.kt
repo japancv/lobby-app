@@ -1,7 +1,6 @@
 package com.example.lobbyapp.ui.customer
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -36,16 +35,18 @@ fun WaitForConfirmationScreen(
 
     GlobalLayout(onCancelButtonClicked = onCancelButtonClicked) {
         Text(
-            "${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
+            text = "${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
+            modifier = Modifier.padding(bottom = 12.dp),
             style = MaterialTheme.typography.h3,
             textAlign = TextAlign.Center,
             maxLines = 1
         )
-        Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = welcomeText, textAlign = TextAlign.Center, style = MaterialTheme.typography.h1
+            text = welcomeText,
+            modifier = Modifier.padding(bottom = 28.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h2
         )
-        Spacer(modifier = Modifier.height(28.dp))
         Text(
             stringResource(R.string.wait_for_confirmation),
             textAlign = TextAlign.Center,

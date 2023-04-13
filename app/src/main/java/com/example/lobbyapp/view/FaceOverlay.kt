@@ -71,7 +71,6 @@ class FaceOverlay @JvmOverloads constructor(
     }
 
     private fun drawFaceBorder(face: Face, canvas: Canvas) {
-
         val padding = 5
         val bounds = face.boundingBox
         val left = translateX(bounds.left.toFloat()).toInt() + padding

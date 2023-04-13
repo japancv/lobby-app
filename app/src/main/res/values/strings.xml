@@ -41,6 +41,8 @@
     <string name="not_registered_found">No registered guest found!</string>
     <string name="not_registered_found_hint">Please remove your hat, sunglasses, etc. and try again</string>
     <string name="first_time_register_question">First-time visitor?</string>
+    <string name="have_a_qr_code">Have a QR code?</string>
+    <string name="scan">Scan</string>
     <!-- FaceRecognitionScreen -->
     <string name="scanning">Scanning...</string>
     <!-- MaintenanceScreen -->

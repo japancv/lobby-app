@@ -34,10 +34,10 @@ fun WelcomeScreen(
                 .padding(bottom = 16.dp),
         )
         Text(
-            text = "${stringResource(R.string.welcome)} ${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
+            text = "${stringResource(R.string.welcome)}\n${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 16.dp),
-            style = MaterialTheme.typography.h1
+            style = MaterialTheme.typography.h2
         )
         Text(
             text = stringResource(R.string.register_photo_hint),
