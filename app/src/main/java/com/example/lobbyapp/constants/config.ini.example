@@ -31,6 +31,9 @@ UA = These Terms of Service (the “Terms”), along with, to the extent applica
 # Set the registration quality check option
 QUALITY_CHECK = FALSE
 
+# Set the option that determines whether the camera is constantly turned on
+CAMERA_ALWAYS_ON = TRUE
+
 # Set the search threshold
 THRESHOLD = 0.85
 

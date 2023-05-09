@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.example.lobbyapp.LobbyAppApplication
 import com.example.lobbyapp.ui.viewModel.FaceDetectionViewModel
 import com.example.lobbyapp.ui.viewModel.QrCodeViewModel
+import com.example.lobbyapp.ui.viewModel.StandbyViewModel
 import com.example.lobbyapp.util.ImageAnalyzer
 import java.io.IOException
 import java.util.*
@@ -45,18 +46,21 @@ fun CameraView(
     modifier: Modifier,
     faceDetectionViewModel: FaceDetectionViewModel,
     qrCodeViewModel: QrCodeViewModel,
+    standbyViewModel: StandbyViewModel,
     navigateToWelcomeScreen: () -> Unit = {},
     navigateToCannotRecognize: () -> Unit = {},
+    navigateToWaitForCheckInConfirmation: () -> Unit = {},
     navigateToWaitForConfirmation: () -> Unit = {},
     onError: (error: Exception) -> Unit = {},
 ) {
     val context = LocalContext.current
     val application = LocalContext.current.applicationContext as LobbyAppApplication
     val (irCameraManager) = remember { mutableStateOf(context.getSystemService(Context.CAMERA_SERVICE) as CameraManager) }
-    val preview = Preview.Builder().build()
+    val standbyUiState = standbyViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
     val executor = ContextCompat.getMainExecutor(context)
     val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+    val preview = Preview.Builder().build()
     val previewView = remember {
         PreviewView(context).apply {
             scaleX = -1F
@@ -72,6 +76,7 @@ fun CameraView(
             .toDouble(),
         navigateToWelcomeScreen = navigateToWelcomeScreen,
         navigateToCannotRecognize = navigateToCannotRecognize,
+        navigateToWaitForCheckInConfirmation = navigateToWaitForCheckInConfirmation,
         navigateToWaitForConfirmation = navigateToWaitForConfirmation,
     )
 
@@ -81,32 +86,37 @@ fun CameraView(
             it.setAnalyzer(executor, imageAnalyzer)
         }
 
-
-    LaunchedEffect(true) {
+    LaunchedEffect(standbyUiState.value) {
         val cameraProvider = context.getCameraProvider()
 
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner,
-            cameraSelector,
-            preview,
-            analysisUseCase
-        )
-        irCameraManager.openCamera(
-            CameraCharacteristics.LENS_FACING_FRONT.toString(),
-            Executors.newSingleThreadExecutor(),
-            object : CameraDevice.StateCallback() {
-                override fun onOpened(camera: CameraDevice) {}
-                override fun onDisconnected(p0: CameraDevice) {}
-                override fun onError(p0: CameraDevice, p1: Int) {
-                    onError(IOException())
+        if (standbyUiState.value.isCameraOn) {
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner,
+                cameraSelector,
+                preview,
+                analysisUseCase
+            )
+            preview.setSurfaceProvider(previewView.surfaceProvider)
+            irCameraManager.openCamera(
+                CameraCharacteristics.LENS_FACING_FRONT.toString(),
+                Executors.newSingleThreadScheduledExecutor(),
+                object : CameraDevice.StateCallback() {
+                    override fun onOpened(camera: CameraDevice) {}
+                    override fun onDisconnected(p0: CameraDevice) {}
+                    override fun onError(p0: CameraDevice, p1: Int) {
+                        onError(IOException())
+                    }
                 }
-            }
-        )
-        preview.setSurfaceProvider(previewView.surfaceProvider)
+            )
+        } else {
+            cameraProvider.unbindAll()
+        }
     }
 
-    Box(contentAlignment = Alignment.BottomCenter, modifier = modifier.fillMaxSize()) {
-        AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
+    if (standbyUiState.value.isCameraOn) {
+        Box(contentAlignment = Alignment.BottomCenter, modifier = modifier.fillMaxSize()) {
+            AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
+        }
     }
 }

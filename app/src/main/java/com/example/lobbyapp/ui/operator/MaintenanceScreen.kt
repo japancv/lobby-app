@@ -34,7 +34,7 @@ fun MaintenanceScreen(
         ManageIdentityUiState.GetGroupsLoading -> LoadingDialog()
         ManageIdentityUiState.Error -> ErrorDialog(
             errorMessage = manageIdentityViewModel.error?.message,
-            onConfirm = onCancelButtonClicked
+            onRetryButtonClicked = onCancelButtonClicked
         )
         else -> {
             if (groupId == "") {

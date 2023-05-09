@@ -63,6 +63,7 @@ class QrCodeViewModel : ViewModel() {
     companion object {
         // Create a singleton instance of QrCodeViewModel
         private val instance = QrCodeViewModel()
+
         // The Factory that returns the singleton instance of QrCodeViewModel
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

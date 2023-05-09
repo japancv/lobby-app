@@ -23,22 +23,24 @@ import kotlinx.coroutines.launch
 fun UserInfoConfirmationScreen(
     onCancelButtonClicked: () -> Unit = {},
     onContinueButtonClicked: () -> Unit = {},
-    onEditButtonClicked: () -> Unit = {}
+    onEditButtonClicked: () -> Unit = {},
+    onRetryButtonClicked: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val error = remember { mutableStateOf<Exception?>(null) }
+    val error = remember { mutableStateOf<String?>(null) }
     val userInfoUiState = UserInfoViewModel.uiState.collectAsState()
 
-    GlobalLayout(headerBottomBorder = false, onCancelButtonClicked = onCancelButtonClicked) {
-        if (error.value != null) {
-            ErrorDialog(
-                errorMessage = error.value?.message,
-                onConfirm = {
-                    error.value = null
-                }
-            )
-        }
+    if (error.value != null) {
+        ErrorDialog(
+            errorMessage = error.value,
+            onRetryButtonClicked = {
+                error.value = null
+                onRetryButtonClicked()
+            }
+        )
+    }
 
+    GlobalLayout(headerBottomBorder = false, onCancelButtonClicked = onCancelButtonClicked) {
         Text(
             modifier = Modifier.padding(bottom = 36.dp),
             text = stringResource(R.string.confirm_info),

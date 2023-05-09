@@ -13,6 +13,7 @@ import com.example.lobbyapp.ui.component.ErrorScreen
 import com.example.lobbyapp.ui.component.ErrorType
 import com.example.lobbyapp.ui.theme.Colors
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
+import com.example.lobbyapp.util.exitApp
 
 class OperatorActivity : ComponentActivity() {
     private var navActions: OperatorNavigation? = null
@@ -43,20 +44,41 @@ class OperatorActivity : ComponentActivity() {
                     if (!intent.getBooleanExtra("isInternetAvailable", true)) {
                         ErrorScreen(
                             isSecondaryDisplay = true,
-                            errorType = ErrorType.INTERNET_NOT_AVAILABLE
+                            errorType = ErrorType.INTERNET_NOT_AVAILABLE,
+                            showCloseButton = true,
+                            onCloseButtonClicked = {
+                                exitApp(
+                                    activity = this,
+                                    application = application
+                                )
+                            }
                         )
                         return@LobbyAppTheme
                     } else if (intent.getStringExtra("missingConfigFields")?.isNotEmpty() == true) {
                         ErrorScreen(
                             isSecondaryDisplay = true,
                             errorType = ErrorType.CONFIG_REQUIRED_FIELD_MISSING,
-                            extraMessage = intent.getStringExtra("missingConfigFields")!!
+                            extraMessage = intent.getStringExtra("missingConfigFields")!!,
+                            showCloseButton = true,
+                            onCloseButtonClicked = {
+                                exitApp(
+                                    activity = this,
+                                    application = application
+                                )
+                            }
                         )
                         return@LobbyAppTheme
                     } else if (!intent.getBooleanExtra("isLogoFilePathLegal", true)) {
                         ErrorScreen(
                             isSecondaryDisplay = true,
-                            errorType = ErrorType.ILLEGAL_LOGO_PATH
+                            errorType = ErrorType.ILLEGAL_LOGO_PATH,
+                            showCloseButton = true,
+                            onCloseButtonClicked = {
+                                exitApp(
+                                    activity = this,
+                                    application = application
+                                )
+                            }
                         )
                         return@LobbyAppTheme
                     }

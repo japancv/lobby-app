@@ -2,7 +2,6 @@ package com.example.lobbyapp.util
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
 
@@ -13,5 +12,5 @@ fun checkInternetAvailable(context: Context): Boolean {
     val network = connectivityManager.activeNetwork
     val capabilities = connectivityManager.getNetworkCapabilities(network)
 
-    return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))
+    return capabilities != null
 }

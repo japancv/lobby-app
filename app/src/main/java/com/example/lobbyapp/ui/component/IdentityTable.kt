@@ -18,6 +18,7 @@ import com.example.lobbyapp.model.IdentitySummary
 import com.example.lobbyapp.ui.theme.BackgroundGreyColor
 import com.example.lobbyapp.ui.theme.body4
 import com.example.lobbyapp.ui.viewModel.ManageIdentityViewModel
+import com.example.lobbyapp.util.formatDate
 import com.example.lobbyapp.util.pixelToSecondaryDp
 
 @Composable
@@ -107,9 +108,11 @@ fun IdentityRow(
     column4Weight: Float,
 ) {
     val (identityDetails, setIdentityDetails) = remember { mutableStateOf<Identity?>(null) }
+
     LaunchedEffect(identity) {
         manageIdentityViewModel.getIdentity(identityId = identity.userId, setIdentityDetails)
     }
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -135,7 +138,8 @@ fun IdentityRow(
             text = "${identity.firstName} ${identity.lastName}", weight = column3Weight
         )
         TableCell(
-            text = if (identityDetails != null) "${identityDetails.createdAt}" else "",
+            text = if (identityDetails !== null && !identityDetails.createdAt.isNullOrBlank())
+                formatDate(identityDetails.createdAt) else "",
             weight = column4Weight
         )
     }

@@ -17,6 +17,10 @@
     <string name="barcode_error_message">QRコードのエラーが発生しました。</string>
     <string name="face_detection_error_message">顔認識エラーが発生しました。</string>
     <string name="camera_error_message">カメラ起動エラーが発生しました。</string>
+    <string name="image_quality_too_low">画像の品質が低すぎます。</string>
+    <string name="image_entity_not_found">画像に顔が見当たりません。</string>
+    <string name="image_entity_duplicated">同じPIN コードで重複または類似な顔が存在します。別のPINコードを試してください。</string>
+    <string name="identity_limit_has_been_reached">上限に達しました為、追加できません。</string>
     <!-- ErrorScreen -->
     <string name="error_config_not_found">config.iniが見つかりません</string>
     <string name="error_internet_not_available">インターネットに接続されていません</string>
@@ -45,6 +49,7 @@
     <string name="scan">スキャン</string>
     <!-- FaceRecognitionScreen -->
     <string name="scanning">スキャン中...</string>
+    <string name="scanningQrCode">QRコードをスキャン中...</string>
     <!-- MaintenanceScreen -->
     <string name="under_maintenance">メンテナンス中</string>
     <!-- UserInfoScreen -->
@@ -67,6 +72,8 @@
     <string name="issue">発行</string>
     <!-- HomeScreen -->
     <string name="manage_grant_access">許可されたアクセスを管理する</string>
+    <string name="turn_on_camera">カメラをオンにする</string>
+    <string name="turn_off_camera">カメラをオフにする</string>
     <string name="close_app">アプリを閉じる</string>
     <!-- ManageIdentityScreen -->
     <string name="confirm_action">確認</string>

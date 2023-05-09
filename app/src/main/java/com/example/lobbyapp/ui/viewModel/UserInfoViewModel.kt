@@ -8,6 +8,7 @@ import com.example.lobbyapp.data.ApiClient
 import com.example.lobbyapp.model.CreateIdentityRequest
 import com.example.lobbyapp.model.Portrait
 import com.example.lobbyapp.network.IdpApiService
+import com.example.lobbyapp.util.parseServerErrorResponse
 import com.example.lobbyapp.util.readConfigFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -197,7 +198,7 @@ object UserInfoViewModel : ViewModel() {
     /**
      * Call API to create an identity
      */
-    suspend fun createIdentity(onSuccess: () -> Unit, onError: (e: Exception) -> Unit) {
+    suspend fun createIdentity(onSuccess: () -> Unit, onError: (e: String?) -> Unit) {
         viewModelScope.launch {
             val apiClient = ApiClient.getInstance().create(IdpApiService::class.java)
             val properties = readConfigFromFile()
@@ -224,9 +225,13 @@ object UserInfoViewModel : ViewModel() {
                 )
                 onSuccess()
             } catch (e: IOException) {
-                onError(e)
+                onError(e.localizedMessage)
             } catch (e: HttpException) {
-                onError(e)
+                val errorResponse = e.response()?.errorBody()
+
+                if (errorResponse != null) {
+                    onError(parseServerErrorResponse(errorResponse)?.message)
+                }
             }
         }
     }

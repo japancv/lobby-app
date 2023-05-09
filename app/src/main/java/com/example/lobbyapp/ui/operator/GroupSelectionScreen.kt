@@ -41,7 +41,7 @@ fun GroupSelectionScreen(
         GroupSelectionUiState.Loading -> LoadingDialog()
         GroupSelectionUiState.Error -> ErrorDialog(
             errorMessage = groupSelectionViewModel.error?.message,
-            onConfirm = onCancelButtonClicked
+            onRetryButtonClicked = onCancelButtonClicked
         )
         else -> GrantAccessScreen(
             groupSelectionViewModel = groupSelectionViewModel,

@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.lobbyapp.ui.viewModel.QrCodeViewModel
+import com.example.lobbyapp.ui.viewModel.StandbyViewModel
 import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
 import java.util.*
 
@@ -36,10 +37,15 @@ fun CustomerApp(
 ) {
     val qrCodeViewModel: QrCodeViewModel =
         viewModel(factory = QrCodeViewModel.Factory)
+    val standbyViewModel: StandbyViewModel =
+        viewModel(factory = StandbyViewModel.Factory)
 
     fun navigateToFaceRecognition(shouldResetForm: Boolean = true, enableQrCode: Boolean = false) {
         if (shouldResetForm) {
             UserInfoViewModel.resetForm()
+        }
+        if (shouldResetForm && !enableQrCode) {
+            standbyViewModel.reset()
         }
 
         qrCodeViewModel.setEnabled(enableQrCode)
@@ -52,9 +58,11 @@ fun CustomerApp(
     ) {
         composable(route = CustomerScreen.FaceRecognition.name) {
             FaceRecognitionScreen(
+                onCancelButtonClicked = { navigateToFaceRecognition() },
                 navigateToWelcomeScreen = { navActions.navigateToWelcome() },
                 navigateToCannotRecognize = { navActions.navigateToCannotRecognize() },
-                navigateToWaitForConfirmation = { navActions.navigateToWaitForCheckInConfirmation() },
+                navigateToWaitForCheckInConfirmation = { navActions.navigateToWaitForCheckInConfirmation() },
+                navigateToWaitForConfirmation = { navActions.navigateToWaitForConfirmation() }
             )
         }
         composable(route = CustomerScreen.CannotRecognize.name) {

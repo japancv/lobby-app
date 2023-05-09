@@ -8,10 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.lobbyapp.ActivityKey
 import com.example.lobbyapp.LobbyAppApplication
 import com.example.lobbyapp.ui.viewModel.QrCodeViewModel
-import kotlin.system.exitProcess
+import com.example.lobbyapp.ui.viewModel.StandbyViewModel
+import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
+import com.example.lobbyapp.util.exitApp
 
 
 enum class OperatorScreen {
@@ -38,8 +39,17 @@ fun OperatorApp(
     val application = LocalContext.current.applicationContext as LobbyAppApplication
     val qrCodeViewModel: QrCodeViewModel =
         viewModel(factory = QrCodeViewModel.Factory)
+    val standbyViewModel: StandbyViewModel =
+        viewModel(factory = StandbyViewModel.Factory)
 
-    fun navigateToHome(enableQrCode: Boolean = false) {
+    fun navigateToHome(shouldResetForm: Boolean = true, enableQrCode: Boolean = false) {
+        if (shouldResetForm) {
+            UserInfoViewModel.resetForm()
+        }
+        if (shouldResetForm && !enableQrCode) {
+            standbyViewModel.reset()
+        }
+
         qrCodeViewModel.setEnabled(enableQrCode)
         navActions.navigateToHome()
     }
@@ -50,10 +60,11 @@ fun OperatorApp(
     ) {
         composable(route = OperatorScreen.OperatorHome.name) {
             HomeScreen(
-                onCloseButtonClicked = fun() {
-                    activity.finishAndRemoveTask()
-                    application.activityList[ActivityKey.CUSTOMER]!!.finishAndRemoveTask()
-                    exitProcess(0)
+                onCloseButtonClicked = {
+                    exitApp(
+                        activity = activity,
+                        application = application
+                    )
                 },
                 onManageButtonClicked = { navActions.navigateToMaintenance() }
             )
@@ -63,7 +74,7 @@ fun OperatorApp(
                 onCancelButtonClicked = { navigateToHome() },
                 onHomeButtonClicked = { navigateToHome() },
                 onRegisterButtonClicked = { navActions.navigateToAgreement() },
-                onScanButtonClicked = { navigateToHome(true) }
+                onScanButtonClicked = { navigateToHome(enableQrCode = true) }
             )
         }
         composable(route = OperatorScreen.OperatorAgreement.name) {
@@ -81,7 +92,8 @@ fun OperatorApp(
             UserInfoConfirmationScreen(
                 onCancelButtonClicked = { navigateToHome() },
                 onContinueButtonClicked = { navActions.navigateGroupSelection() },
-                onEditButtonClicked = { navActions.navigateToUserInfo() }
+                onEditButtonClicked = { navActions.navigateToUserInfo() },
+                onRetryButtonClicked = { navigateToHome(shouldResetForm = false) }
             )
         }
         composable(route = OperatorScreen.OperatorGroupSelection.name) {

@@ -17,6 +17,10 @@
     <string name="barcode_error_message">An error has occurred while scanning QR code.</string>
     <string name="face_detection_error_message">An error has occurred while scanning face.</string>
     <string name="camera_error_message">An error has occurred while starting camera.</string>
+    <string name="image_quality_too_low">The image Quality is too Low.</string>
+    <string name="image_entity_not_found">There is no face found in the image.</string>
+    <string name="image_entity_duplicated">Duplicated or similar face exists with the same PIN code. Please try a different PIN code.</string>
+    <string name="identity_limit_has_been_reached">Failed to add the identity since the limit has been reached.</string>
     <!-- ErrorScreen -->
     <string name="error_config_not_found">config.ini not found</string>
     <string name="error_internet_not_available">Internet is not available</string>
@@ -45,6 +49,7 @@
     <string name="scan">Scan</string>
     <!-- FaceRecognitionScreen -->
     <string name="scanning">Scanning...</string>
+    <string name="scanningQrCode">Scanning QR code...</string>
     <!-- MaintenanceScreen -->
     <string name="under_maintenance">Under Maintenance</string>
     <!-- UserInfoScreen -->
@@ -67,6 +72,8 @@
     <string name="issue">Issue</string>
     <!-- HomeScreen -->
     <string name="manage_grant_access">Manage granted access</string>
+    <string name="turn_on_camera">Turn on the camera</string>
+    <string name="turn_off_camera">Turn off the camera</string>
     <string name="close_app">Close App</string>
     <!-- ManageIdentityScreen -->
     <string name="confirm_action">Confirm Action</string>

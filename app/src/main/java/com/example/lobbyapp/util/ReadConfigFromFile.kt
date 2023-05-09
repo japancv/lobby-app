@@ -14,6 +14,7 @@ enum class RequiredFields {
     BACKGROUND_COLOR,
     TEXT_COLOR,
     QUALITY_CHECK,
+    CAMERA_ALWAYS_ON,
     THRESHOLD,
     UA,
     IDP_URL,
@@ -22,8 +23,10 @@ enum class RequiredFields {
     PIN
 }
 
+private val FILENAMES = listOf("lobby-config.ini", "config.ini");
+
 fun checkConfigExists(): Boolean {
-    return getFile("config.ini").exists()
+    return getFile(FILENAMES) != null
 }
 
 fun checkConfigRequiredFieldsExist(properties: Properties): String {
@@ -39,16 +42,23 @@ fun checkConfigRequiredFieldsExist(properties: Properties): String {
 }
 
 fun readConfigFromFile(): Properties {
-    val configFile = getFile("config.ini")
+    val configFile = getFile(FILENAMES)
     val fileInputStream = FileInputStream(configFile)
     val properties = Properties()
     properties.load(InputStreamReader(fileInputStream, Charset.forName("UTF-8")))
     return properties
 }
 
-fun getFile(filename: String): File {
+fun getFile(filenames: List<String>): File? {
     val downloadsPath: String =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
 
-    return File("$downloadsPath/$filename")
+    for (filename in filenames) {
+        val file = File("$downloadsPath/$filename")
+        if (file.exists()) {
+            return file
+        }
+    }
+
+    return null
 }

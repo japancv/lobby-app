@@ -15,14 +15,17 @@ import com.example.lobbyapp.R
 import com.example.lobbyapp.ui.component.*
 import com.example.lobbyapp.ui.viewModel.FaceDetectionViewModel
 import com.example.lobbyapp.ui.viewModel.QrCodeViewModel
+import com.example.lobbyapp.ui.viewModel.StandbyViewModel
 import com.example.lobbyapp.view.FaceOverlay
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun FaceRecognitionScreen(
+    onCancelButtonClicked: () -> Unit = {},
     navigateToWelcomeScreen: () -> Unit = {},
     navigateToCannotRecognize: () -> Unit = {},
+    navigateToWaitForCheckInConfirmation: () -> Unit = {},
     navigateToWaitForConfirmation: () -> Unit = {}
 ) {
     val faceDetectionViewModel: FaceDetectionViewModel =
@@ -33,24 +36,30 @@ fun FaceRecognitionScreen(
         viewModel(factory = QrCodeViewModel.Factory)
     val qrCodeState = qrCodeViewModel.uiState.collectAsState()
 
+    val standbyViewModel: StandbyViewModel =
+        viewModel(factory = StandbyViewModel.Factory)
+    val standbyState = standbyViewModel.uiState.collectAsState()
+
     val (cameraError, setCameraError) = remember { mutableStateOf<Exception?>(null) }
 
-    if (qrCodeState.value.error != null) {
+    if (!standbyState.value.isCameraOn) {
+        StandbyScreen()
+    } else if (qrCodeState.value.error != null) {
         ErrorDialog(
             errorMessage = qrCodeState.value.error,
-            onConfirm = {
+            onRetryButtonClicked = {
                 qrCodeViewModel.setError(null)
             })
     } else if (faceDetectionState.value.error != null) {
         ErrorDialog(
             errorMessage = faceDetectionState.value.error,
-            onConfirm = {
+            onRetryButtonClicked = {
                 faceDetectionViewModel.setError(null)
             })
     } else if (cameraError != null) {
         ErrorDialog(
             errorMessage = stringResource(R.string.camera_error_message),
-            onConfirm = {
+            onRetryButtonClicked = {
                 setCameraError(null)
             })
     }
@@ -58,22 +67,30 @@ fun FaceRecognitionScreen(
     Scaffold(
         topBar = {
             Header(
-                buttonText = "",
+                buttonText = if (qrCodeState.value.enabled) stringResource(R.string.cancel) else "",
+                onCancelButtonClicked = onCancelButtonClicked,
                 bottomBorder = false
             )
         },
-        bottomBar = { StateBottomAppBar(initialState = stringResource(R.string.scanning)) },
+        bottomBar = {
+            StateBottomAppBar(
+                initialState = if (qrCodeState.value.enabled)
+                    stringResource(R.string.scanningQrCode) else stringResource(R.string.scanning)
+            )
+        },
         modifier = Modifier.fillMaxSize(),
     ) {
         CameraView(
             modifier = Modifier,
             faceDetectionViewModel = faceDetectionViewModel,
             qrCodeViewModel = qrCodeViewModel,
+            standbyViewModel = standbyViewModel,
             navigateToWelcomeScreen = navigateToWelcomeScreen,
             navigateToCannotRecognize = navigateToCannotRecognize,
+            navigateToWaitForCheckInConfirmation = navigateToWaitForCheckInConfirmation,
             navigateToWaitForConfirmation = navigateToWaitForConfirmation,
-            onError = fun(error) {
-                setCameraError(error)
+            onError = {
+                setCameraError(it)
             }
         )
         AndroidView(

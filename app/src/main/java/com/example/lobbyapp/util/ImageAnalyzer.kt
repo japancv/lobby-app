@@ -33,6 +33,7 @@ class ImageAnalyzer(
     threshold: Double,
     navigateToWelcomeScreen: () -> Unit = {},
     navigateToCannotRecognize: () -> Unit = {},
+    navigateToWaitForCheckInConfirmation: () -> Unit = {},
     navigateToWaitForConfirmation: () -> Unit = {},
 ) : ImageAnalysis.Analyzer {
     private val apiClient =
@@ -50,6 +51,7 @@ class ImageAnalyzer(
     private var _threshold: Double
     private var _navigateToCannotRecognize: () -> Unit
     private var _navigateToWelcomeScreen: () -> Unit
+    private var _navigateToWaitForCheckInConfirmation: () -> Unit
     private var _navigateToWaitForConfirmation: () -> Unit
 
     init {
@@ -60,6 +62,7 @@ class ImageAnalyzer(
         _threshold = threshold
         _navigateToCannotRecognize = navigateToCannotRecognize
         _navigateToWelcomeScreen = navigateToWelcomeScreen
+        _navigateToWaitForCheckInConfirmation = navigateToWaitForCheckInConfirmation
         _navigateToWaitForConfirmation = navigateToWaitForConfirmation
         evaluating = false
         navigated = false
@@ -181,19 +184,19 @@ class ImageAnalyzer(
                     if (!navigated) {
                         navigated = true
                         evaluating = false
-                        _navigateToWaitForConfirmation()
+                        _navigateToWaitForCheckInConfirmation()
                     }
                 }
             } catch (e: IOException) {
-                Log.d("FaceAnalyzer Error", e.toString())
                 if (!navigated) {
                     _faceDetectionViewModel.setError(e.localizedMessage)
                 }
             } catch (e: HttpException) {
-                val errorResponse = e.response()?.errorBody()?.string()
-                Log.d("FaceAnalyzer Error", errorResponse.toString())
-                if (!navigated) {
-                    _faceDetectionViewModel.setError(errorResponse)
+                val errorResponse = e.response()?.errorBody()
+
+                if (!navigated && errorResponse != null) {
+                    Log.d("FaceAnalyzer Error", errorResponse.toString())
+                    _faceDetectionViewModel.setError(parseServerErrorResponse(errorResponse)?.message)
                 }
             } finally {
                 evaluating = false
@@ -229,11 +232,12 @@ class ImageAnalyzer(
                     _qrCodeViewModel.setError(e.localizedMessage)
                 }
             } catch (e: HttpException) {
-                val errorResponse = e.response()?.errorBody()?.string()
-                Log.d("Barcode Error", errorResponse.toString())
-                UserInfoViewModel.updateQrCodeScanned(false)
-                if (!navigated) {
-                    _qrCodeViewModel.setError(errorResponse)
+                val errorResponse = e.response()?.errorBody()
+
+                if (!navigated && errorResponse != null) {
+                    Log.d("Barcode Error", errorResponse.toString())
+                    UserInfoViewModel.updateQrCodeScanned(false)
+                    _qrCodeViewModel.setError(parseServerErrorResponse(errorResponse)?.message)
                 }
             } finally {
                 evaluating = false
@@ -261,14 +265,21 @@ class ImageAnalyzer(
                                     image = base64Image
                                 )
 
-                                _navigateToWaitForConfirmation()
+                                _navigateToWaitForCheckInConfirmation()
                             }
                         } else {
+                            val isRetakeImage =
+                                !UserInfoViewModel.uiState.value.image.isNullOrBlank() && UserInfoViewModel.uiState.value.isRegister
                             navigated = true
                             UserInfoViewModel.updateImage(
                                 image = base64Image
                             )
-                            _navigateToCannotRecognize()
+
+                            if (isRetakeImage) {
+                                _navigateToWaitForConfirmation()
+                            } else {
+                                _navigateToCannotRecognize()
+                            }
                         }
                     }
                 }
@@ -278,10 +289,11 @@ class ImageAnalyzer(
                     _faceDetectionViewModel.setError(e.localizedMessage)
                 }
             } catch (e: HttpException) {
-                val errorResponse = e.response()?.errorBody()?.string()
-                Log.d("FaceAnalyzer Error", errorResponse.toString())
-                if (!navigated) {
-                    _faceDetectionViewModel.setError(errorResponse)
+                val errorResponse = e.response()?.errorBody()
+
+                if (!navigated && errorResponse != null) {
+                    Log.d("FaceAnalyzer Error", errorResponse.toString())
+                    _faceDetectionViewModel.setError(parseServerErrorResponse(errorResponse)?.message)
                 }
             } finally {
                 _faceDetectionViewModel.setFaces(emptyList())
