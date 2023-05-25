@@ -75,7 +75,7 @@ fun FaceRecognitionScreen(
         bottomBar = {
             StateBottomAppBar(
                 initialState = if (qrCodeState.value.enabled)
-                    stringResource(R.string.scanningQrCode) else stringResource(R.string.scanning)
+                    stringResource(R.string.scanning_qr_code) else stringResource(R.string.scanning)
             )
         },
         modifier = Modifier.fillMaxSize(),

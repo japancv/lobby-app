@@ -1,9 +1,15 @@
 package com.example.lobbyapp.data
 
-import com.example.lobbyapp.model.*
+import com.example.lobbyapp.model.AddGroupIdentitiesRequest
+import com.example.lobbyapp.model.DecodedUserIdRequest
+import com.example.lobbyapp.model.DecodedUserIdResponse
+import com.example.lobbyapp.model.GetIdpGroupsResponse
+import com.example.lobbyapp.model.Identity
+import com.example.lobbyapp.model.IdpGroup
+import com.example.lobbyapp.model.RemoveGroupIdentitiesRequest
 import com.example.lobbyapp.network.IdpApiService
 import okio.ByteString
-import java.util.*
+import java.util.Properties
 
 /**
  * Repository that fetch IDP groups list.

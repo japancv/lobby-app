@@ -100,24 +100,31 @@ class CustomerActivity : ComponentActivity() {
                 "$packageName.${CustomerScreen.CannotRecognize.name}" -> {
                     navActions?.navigateToCannotRecognize()
                 }
+
                 "$packageName.${CustomerScreen.Agreement.name}" -> {
                     navActions?.navigateToAgreement()
                 }
+
                 "$packageName.${CustomerScreen.UserInfo.name}" -> {
                     navActions?.navigateToUserInfo()
                 }
+
                 "$packageName.${CustomerScreen.WaitForConfirmation.name}" -> {
                     navActions?.navigateToWaitForConfirmation()
                 }
+
                 "$packageName.${CustomerScreen.AccessGranted.name}" -> {
                     navActions?.navigateToAccessGranted()
                 }
+
                 "$packageName.${CustomerScreen.MaintenanceScreen.name}" -> {
                     navActions?.navigateToMaintenance()
                 }
+
                 "$packageName.${CustomerScreen.WelcomeScreen.name}" -> {
                     navActions?.navigateToWelcome()
                 }
+
                 else -> {
                     navActions?.navigateToFaceRecognition()
                 }

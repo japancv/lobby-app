@@ -29,49 +29,49 @@
     <string name="photo">写真</string>
     <string name="name">名前</string>
     <string name="added_date">追加時刻</string>
-    <string name="empty">空</string>
+    <string name="empty">該当するデータがありません</string>
     <!-- Customer -->
     <!-- WelcomeScreen -->
-    <string name="register_photo_hint">アクセスするためには、顔写真を登録してください。</string>
+    <string name="register_photo_hint">顔写真のご登録をお願いします。</string>
     <!-- AccessGrantedScreen -->
-    <string name="title_access_granted">アクセスが許可されました。</string>
-    <string name="subtitle_access_granted">お待たせしました。</string>
+    <string name="title_access_granted">チェックインが完了しました。</string>
+    <string name="subtitle_access_granted">お待たせいたしました。</string>
     <!-- AgreementScreen -->
-    <string name="title_read_and_confirm">お読みいただき\nご確認ください。</string>
+    <string name="title_read_and_confirm">利用規約をご確認ください。</string>
     <string name="agree">同意</string>
-    <string name="already_registered_question">すでに登録？</string>
+    <string name="already_registered_question">アカウントを\nお持ちですか？</string>
     <string name="check_in">チェックイン</string>
     <!-- CannotRecognizeScreen -->
-    <string name="not_registered_found">登録済みのゲストが見つかりません！</string>
-    <string name="not_registered_found_hint">帽子やサングラスなどを外して、もう一度お試しください</string>
+    <string name="not_registered_found">該当するゲストが見つかりませんでした。</string>
+    <string name="not_registered_found_hint">帽子やサングラスなどを外して、\nもう一度お試しください。</string>
     <string name="first_time_register_question">初めてのご利用ですか？</string>
     <string name="have_a_qr_code">QRコードをお持ちですか？</string>
     <string name="scan">スキャン</string>
     <!-- FaceRecognitionScreen -->
     <string name="scanning">スキャン中...</string>
-    <string name="scanningQrCode">QRコードをスキャン中...</string>
+    <string name="scanning_qr_code">QRコードをスキャン中...</string>
     <!-- MaintenanceScreen -->
     <string name="under_maintenance">メンテナンス中</string>
     <!-- UserInfoScreen -->
-    <string name="user_info_title">情報を入力してください</string>
+    <string name="user_info_title">情報を入力してください。</string>
     <string name="first_name">姓</string>
     <string name="last_name">名</string>
     <string name="phone_number">携帯番号</string>
     <string name="email">メール</string>
     <!-- WaitForConfirmationScreen -->
     <string name="welcome">いらっしゃいませ</string>
-    <string name="welcome_back">おかえりなさい</string>
-    <string name="wait_for_confirmation">確認中、をお待ちください</string>
-    <string name="register_success">顔登録成功</string>
+    <string name="welcome_back">おかえりなさいませ</string>
+    <string name="wait_for_confirmation">確認までお待ちください。</string>
+    <string name="register_success">登録が完了しました。</string>
     <!-- Operator -->
     <!-- AgreementScreen -->
-    <string name="wait_for_agreement_confirmation">利用規約確認中...</string>
+    <string name="wait_for_agreement_confirmation">利用規約の確認中です...</string>
     <!-- GroupSelectionScreen -->
     <string name="title_group_selection">アクセスを許可するグループを選択</string>
     <string name="select_group">グループを選択</string>
-    <string name="issue">発行</string>
+    <string name="issue">登録</string>
     <!-- HomeScreen -->
-    <string name="manage_grant_access">許可されたアクセスを管理する</string>
+    <string name="manage_grant_access">アクセス権限の管理</string>
     <string name="turn_on_camera">カメラをオンにする</string>
     <string name="turn_off_camera">カメラをオフにする</string>
     <string name="close_app">アプリを閉じる</string>
@@ -81,10 +81,10 @@
     <string name="remove">削除</string>
     <string name="remove_all">すべて削除</string>
     <!-- SuccessFoundScreen -->
-    <string name="check_in_question">訪問者はこの人としてチェックインしますか？</string>
-    <string name="check_in_question_hint">情報が一致しない場合は、ITサポートにお問い合わせください</string>
+    <string name="check_in_question">ゲストの情報を確認してください。</string>
+    <string name="check_in_question_hint">情報が一致しない場合は、ITサポートにお問い合わせください。</string>
     <!-- UserInfoConfirmationScreen -->
-    <string name="confirm_info">情報を確認してください</string>
+    <string name="confirm_info">ゲストの情報を確認してください。</string>
     <string name="edit">修正</string>
     <!-- UserInfoConfirmationScreen -->
     <string name="contact_info">連絡先情報</string>

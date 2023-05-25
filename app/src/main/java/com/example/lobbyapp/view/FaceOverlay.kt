@@ -2,7 +2,11 @@ package com.example.lobbyapp.view
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.VectorDrawable
 import android.util.AttributeSet
 import android.util.Log

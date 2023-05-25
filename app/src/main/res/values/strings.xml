@@ -49,7 +49,7 @@
     <string name="scan">Scan</string>
     <!-- FaceRecognitionScreen -->
     <string name="scanning">Scanning...</string>
-    <string name="scanningQrCode">Scanning QR code...</string>
+    <string name="scanning_qr_code">Scanning QR code...</string>
     <!-- MaintenanceScreen -->
     <string name="under_maintenance">Under Maintenance</string>
     <!-- UserInfoScreen -->

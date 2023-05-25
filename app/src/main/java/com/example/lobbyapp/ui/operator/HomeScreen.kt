@@ -1,7 +1,11 @@
 package com.example.lobbyapp.ui.operator
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -68,14 +72,6 @@ fun HomeScreen(
                         }
                     )
                 }
-            }
-
-            TextButton(onClick = onCloseButtonClicked) {
-                Text(
-                    text = stringResource(R.string.close_app),
-                    style = MaterialTheme.typography.body5,
-                    color = MaterialTheme.colors.primary
-                )
             }
         }
     }

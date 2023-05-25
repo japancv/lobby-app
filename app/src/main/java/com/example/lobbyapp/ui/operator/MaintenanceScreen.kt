@@ -13,7 +13,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lobbyapp.LobbyAppApplication
 import com.example.lobbyapp.R
 import com.example.lobbyapp.model.IdpGroupSummary
-import com.example.lobbyapp.ui.component.*
+import com.example.lobbyapp.ui.component.AutoComplete
+import com.example.lobbyapp.ui.component.ErrorDialog
+import com.example.lobbyapp.ui.component.GlobalLayout
+import com.example.lobbyapp.ui.component.LoadingDialog
+import com.example.lobbyapp.ui.component.Option
 import com.example.lobbyapp.ui.viewModel.ManageIdentityUiState
 import com.example.lobbyapp.ui.viewModel.ManageIdentityViewModel
 
@@ -36,6 +40,7 @@ fun MaintenanceScreen(
             errorMessage = manageIdentityViewModel.error?.message,
             onRetryButtonClicked = onCancelButtonClicked
         )
+
         else -> {
             if (groupId == "") {
                 SelectionScreen(

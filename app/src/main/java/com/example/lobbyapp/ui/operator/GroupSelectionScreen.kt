@@ -1,6 +1,11 @@
 package com.example.lobbyapp.ui.operator
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -21,7 +26,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lobbyapp.LobbyAppApplication
 import com.example.lobbyapp.R
 import com.example.lobbyapp.model.IdpGroupSummary
-import com.example.lobbyapp.ui.component.*
+import com.example.lobbyapp.ui.component.AutoComplete
+import com.example.lobbyapp.ui.component.CustomButton
+import com.example.lobbyapp.ui.component.ErrorDialog
+import com.example.lobbyapp.ui.component.GlobalLayout
+import com.example.lobbyapp.ui.component.LoadingDialog
+import com.example.lobbyapp.ui.component.Option
 import com.example.lobbyapp.ui.theme.body4
 import com.example.lobbyapp.ui.viewModel.GroupSelectionUiState
 import com.example.lobbyapp.ui.viewModel.GroupSelectionViewModel
@@ -43,6 +53,7 @@ fun GroupSelectionScreen(
             errorMessage = groupSelectionViewModel.error?.message,
             onRetryButtonClicked = onCancelButtonClicked
         )
+
         else -> GrantAccessScreen(
             groupSelectionViewModel = groupSelectionViewModel,
             onIssueButtonClicked = onIssueButtonClicked,

@@ -7,7 +7,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.lobbyapp.LobbyAppApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.*
+import java.util.Locale
+import java.util.Properties
 
 data class StandbyUiState(
     var isCameraOn: Boolean = true,

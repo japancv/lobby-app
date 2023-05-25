@@ -1,6 +1,11 @@
 package com.example.lobbyapp.ui.operator
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +22,7 @@ import com.example.lobbyapp.ui.component.GlobalLayout
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
 import com.example.lobbyapp.ui.theme.body4
 import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
+import com.example.lobbyapp.util.formatName
 import com.example.lobbyapp.util.pixelToSecondaryDp
 import com.example.lobbyapp.util.toSecondarySp
 
@@ -35,7 +41,10 @@ fun SuccessFoundScreen(
         )
         InfoRow(
             key = stringResource(R.string.name),
-            value = "${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
+            value = formatName(
+                firstName = userInfoUiState.value.firstName,
+                lastName = userInfoUiState.value.lastName
+            ),
         )
         InfoRow(
             key = stringResource(R.string.phone_number),

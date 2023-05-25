@@ -112,27 +112,35 @@ class OperatorActivity : ComponentActivity() {
                 "$packageName.${OperatorScreen.OperatorCannotRecognize.name}" -> {
                     navActions?.navigateToCannotRecognize(true)
                 }
+
                 "$packageName.${OperatorScreen.OperatorAgreement.name}" -> {
                     navActions?.navigateToAgreement(true)
                 }
+
                 "$packageName.${OperatorScreen.OperatorUserInfo.name}" -> {
                     navActions?.navigateToUserInfo(true)
                 }
+
                 "$packageName.${OperatorScreen.OperatorConfirmUserInfo.name}" -> {
                     navActions?.navigateToConfirmUserInfo(true)
                 }
+
                 "$packageName.${OperatorScreen.OperatorGroupSelection.name}" -> {
                     navActions?.navigateGroupSelection()
                 }
+
                 "$packageName.${OperatorScreen.OperatorAccessGranted.name}" -> {
                     navActions?.navigateAccessGranted(true)
                 }
+
                 "$packageName.${OperatorScreen.OperatorSuccessFound.name}" -> {
                     navActions?.navigateSuccessFound(true)
                 }
+
                 "$packageName.${OperatorScreen.OperatorWelcome.name}" -> {
                     navActions?.navigateWelcome()
                 }
+
                 else -> {
                     navActions?.navigateToHome(true)
                 }

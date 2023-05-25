@@ -1,9 +1,19 @@
 package com.example.lobbyapp.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +29,7 @@ import com.example.lobbyapp.ui.theme.BackgroundGreyColor
 import com.example.lobbyapp.ui.theme.body4
 import com.example.lobbyapp.ui.viewModel.ManageIdentityViewModel
 import com.example.lobbyapp.util.formatDate
+import com.example.lobbyapp.util.formatName
 import com.example.lobbyapp.util.pixelToSecondaryDp
 
 @Composable
@@ -135,7 +146,8 @@ fun IdentityRow(
             Avatar(identityId = identity.userId, manageIdentityViewModel = manageIdentityViewModel)
         }
         TableCell(
-            text = "${identity.firstName} ${identity.lastName}", weight = column3Weight
+            text = formatName(firstName = identity.firstName, lastName = identity.lastName),
+            weight = column3Weight
         )
         TableCell(
             text = if (identityDetails !== null && !identityDetails.createdAt.isNullOrBlank())

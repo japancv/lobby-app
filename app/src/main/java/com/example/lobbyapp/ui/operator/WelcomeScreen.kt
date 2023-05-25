@@ -14,6 +14,7 @@ import com.example.lobbyapp.ui.component.CustomButton
 import com.example.lobbyapp.ui.component.GlobalLayout
 import com.example.lobbyapp.ui.theme.LobbyAppTheme
 import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
+import com.example.lobbyapp.util.formatName
 import com.example.lobbyapp.util.pixelToSecondaryDp
 import com.example.lobbyapp.util.toSecondarySp
 
@@ -30,7 +31,12 @@ fun WelcomeScreen(
         onCancelButtonClicked = onCancelButtonClicked
     ) {
         Text(
-            text = "${stringResource(R.string.welcome)} ${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
+            text = "${stringResource(R.string.welcome)} ${
+                formatName(
+                    firstName = userInfoUiState.value.firstName,
+                    lastName = userInfoUiState.value.lastName
+                )
+            }",
             style = MaterialTheme.typography.h1.toSecondarySp()
         )
         CustomButton(

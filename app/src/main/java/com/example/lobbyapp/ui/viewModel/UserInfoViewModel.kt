@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 const val MAX_LENGTH = 255
 

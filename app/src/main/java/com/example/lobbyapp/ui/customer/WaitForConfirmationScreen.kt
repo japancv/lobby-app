@@ -13,6 +13,7 @@ import com.example.lobbyapp.R
 import com.example.lobbyapp.ui.component.GlobalLayout
 import com.example.lobbyapp.ui.theme.body5
 import com.example.lobbyapp.ui.viewModel.UserInfoViewModel
+import com.example.lobbyapp.util.formatName
 
 @Composable
 fun WaitForConfirmationScreen(
@@ -35,7 +36,11 @@ fun WaitForConfirmationScreen(
 
     GlobalLayout(onCancelButtonClicked = onCancelButtonClicked) {
         Text(
-            text = "${userInfoUiState.value.firstName} ${userInfoUiState.value.lastName}",
+            text = formatName(
+                firstName = userInfoUiState.value.firstName,
+                lastName = userInfoUiState.value.lastName,
+                addSaMa = true
+            ),
             modifier = Modifier.padding(bottom = 12.dp),
             style = MaterialTheme.typography.h3,
             textAlign = TextAlign.Center,

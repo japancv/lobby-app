@@ -2,7 +2,7 @@ package com.example.lobbyapp.data
 
 import com.example.lobbyapp.network.IdpApiService
 import com.example.lobbyapp.util.readConfigFromFile
-import java.util.*
+import java.util.Properties
 
 /**
  * Dependency Injection container at the application level.
